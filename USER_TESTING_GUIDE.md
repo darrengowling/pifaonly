@@ -14,7 +14,7 @@ Welcome to the Friends of PIFA app! This guide will help you navigate and test a
 
 ## 🎯 App Overview
 
-**What is it?** A fantasy football auction where friends bid against each other for exclusive ownership of real football teams (Champions League & Europa League), then compete based on real-world team performance.
+**What is it?** A football auction where friends bid against each other for exclusive ownership of real football teams (Champions League & Europa League), then compete based on real-world team performance.
 
 **How it works:**
 1. **Admin creates tournament** → Sets budget, rules, entry fees
