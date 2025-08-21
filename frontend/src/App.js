@@ -49,6 +49,14 @@ function App() {
     } else {
       initUser();
     }
+
+    // Listen for custom events to show user guide
+    const handleShowGuide = () => setShowUserGuide(true);
+    window.addEventListener('showUserGuide', handleShowGuide);
+
+    return () => {
+      window.removeEventListener('showUserGuide', handleShowGuide);
+    };
   }, []);
 
   const value = {
