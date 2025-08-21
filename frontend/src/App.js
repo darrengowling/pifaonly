@@ -508,7 +508,7 @@ const TournamentView = () => {
     }
   };
 
-  const canJoinTournament = !tournament.participants.includes(user.id) && tournament.status === 'pending';
+  const canJoinTournament = tournament && !tournament.participants.includes(user.id) && tournament.status === 'pending';
 
   const resetUserForTesting = () => {
     if (confirm('Reset user for testing? This will create a new user account and refresh the page.')) {
