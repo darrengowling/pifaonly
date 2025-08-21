@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import axios from "axios";
 import "./App.css";
 import AuctionRoom from "./AuctionRoom";
+import UserGuide from "./components/UserGuide";
 
 // Context for global state
 const AppContext = createContext();
