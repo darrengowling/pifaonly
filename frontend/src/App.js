@@ -580,6 +580,9 @@ const TournamentView = () => {
               <div className="text-lg font-semibold text-yellow-400">
                 {tournament.status.replace('_', ' ').toUpperCase()}
               </div>
+              {isRefreshing && (
+                <div className="text-xs text-blue-400 mt-1">Syncing...</div>
+              )}
             </div>
           </div>
 
