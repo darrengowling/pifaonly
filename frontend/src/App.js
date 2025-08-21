@@ -425,10 +425,12 @@ const TournamentView = () => {
           )}
 
           {tournament.status === 'auction_active' && (
-            <div className="bg-blue-900 border border-blue-600 p-4 rounded-lg mb-6">
-              <h3 className="text-lg font-semibold text-blue-300 mb-2">Auction Active</h3>
-              <p className="text-blue-200">The auction is currently running. Auction interface coming soon!</p>
-            </div>
+            <button
+              onClick={() => window.location.href = `/auction/${tournamentId}`}
+              className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold transition-colors mb-6"
+            >
+              Join Live Auction
+            </button>
           )}
         </div>
 
