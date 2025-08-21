@@ -424,28 +424,79 @@ const TournamentView = () => {
 
   const copyTournamentLink = () => {
     const url = window.location.href;
-    if (navigator.share) {
-      // Use native sharing on mobile
+    console.log('Share button clicked, URL:', url);
+    
+    // Try native sharing first (mobile)
+    if (navigator.share && /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+      console.log('Using native sharing');
       navigator.share({
         title: tournament.name,
         text: `Join my PIFA tournament: ${tournament.name}`,
         url: url,
-      }).catch(console.error);
-    } else if (navigator.clipboard) {
-      // Copy to clipboard
-      navigator.clipboard.writeText(url).then(() => {
-        alert('Tournament link copied to clipboard!');
-      }).catch(() => {
-        // Fallback for older browsers
-        const textArea = document.createElement('textarea');
-        textArea.value = url;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        alert('Tournament link copied to clipboard!');
+      }).then(() => {
+        console.log('Share successful');
+      }).catch((error) => {
+        console.log('Share failed, using clipboard fallback:', error);
+        copyToClipboard(url);
       });
+    } else {
+      // Use clipboard for desktop
+      copyToClipboard(url);
     }
+  };
+
+  const copyToClipboard = (text) => {
+    console.log('Copying to clipboard:', text);
+    
+    if (navigator.clipboard && window.isSecureContext) {
+      // Modern clipboard API
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Tournament link copied to clipboard!\n\nShare this link with your friends to join the tournament.');
+        console.log('Copied via clipboard API');
+      }).catch((error) => {
+        console.log('Clipboard API failed:', error);
+        fallbackCopy(text);
+      });
+    } else {
+      // Fallback method
+      fallbackCopy(text);
+    }
+  };
+
+  const fallbackCopy = (text) => {
+    console.log('Using fallback copy method');
+    try {
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-999999px';
+      textArea.style.top = '-999999px';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      
+      const successful = document.execCommand('copy');
+      document.body.removeChild(textArea);
+      
+      if (successful) {
+        alert('Tournament link copied!\n\nShare this link with your friends to join the tournament.');
+        console.log('Fallback copy successful');
+      } else {
+        showManualCopy(text);
+      }
+    } catch (error) {
+      console.log('Fallback copy failed:', error);
+      showManualCopy(text);
+    }
+  };
+
+  const showManualCopy = (text) => {
+    console.log('Showing manual copy prompt');
+    const message = `Please copy this tournament link manually:\n\n${text}\n\nShare it with your friends to join the tournament!`;
+    alert(message);
+    
+    // Also log to console for easy copying
+    console.log('Manual copy - Tournament URL:', text);
   };
 
   if (!tournament) {
