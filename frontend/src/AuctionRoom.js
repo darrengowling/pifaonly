@@ -105,28 +105,44 @@ const AuctionRoom = ({ tournamentId, user }) => {
 
   const fetchInitialData = async () => {
     try {
-      const [tournamentRes, teamsRes, chatRes] = await Promise.all([
-        axios.get(`${API}/tournaments/${tournamentId}`),
-        axios.get(`${API}/teams`),
-        axios.get(`${API}/tournaments/${tournamentId}/chat`)
-      ]);
+      console.log('Fetching initial data for tournament:', tournamentId);
       
+      // Fetch tournament first
+      const tournamentRes = await axios.get(`${API}/tournaments/${tournamentId}`);
+      console.log('Tournament data:', tournamentRes.data);
       setTournament(tournamentRes.data);
+      
+      // Fetch teams
+      const teamsRes = await axios.get(`${API}/teams`);
+      console.log('Teams loaded:', teamsRes.data.length);
       setTeams(teamsRes.data);
-      setChatMessages(chatRes.data);
+      
+      // Fetch chat messages
+      try {
+        const chatRes = await axios.get(`${API}/tournaments/${tournamentId}/chat`);
+        setChatMessages(chatRes.data);
+      } catch (chatError) {
+        console.log('No chat messages yet:', chatError.message);
+        setChatMessages([]);
+      }
       
       // Fetch participants
-      const participantPromises = tournamentRes.data.participants.map(id => 
-        axios.get(`${API}/users/${id}`)
-      );
-      const participantResponses = await Promise.all(participantPromises);
-      setParticipants(participantResponses.map(res => res.data));
+      if (tournamentRes.data.participants && tournamentRes.data.participants.length > 0) {
+        const participantPromises = tournamentRes.data.participants.map(id => 
+          axios.get(`${API}/users/${id}`)
+        );
+        const participantResponses = await Promise.all(participantPromises);
+        setParticipants(participantResponses.map(res => res.data));
+      }
       
-      await fetchSquads();
-      await fetchCurrentTeam();
+      // Only fetch current team if auction is active
+      if (tournamentRes.data.status === 'auction_active') {
+        await fetchCurrentTeam(teamsRes.data);
+      }
       
     } catch (error) {
       console.error('Failed to fetch initial data:', error);
+      alert('Failed to load auction data. Please try again.');
     }
   };
 
