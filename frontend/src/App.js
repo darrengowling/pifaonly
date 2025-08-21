@@ -413,6 +413,15 @@ const TournamentView = () => {
     }
   };
 
+  const startAuction = async () => {
+    try {
+      await axios.post(`${API}/tournaments/${tournamentId}/start-auction?admin_id=${user.id}`);
+      window.location.href = `/auction/${tournamentId}`;
+    } catch (error) {
+      alert('Failed to start auction: ' + error.response?.data?.detail);
+    }
+  };
+
   const copyTournamentLink = () => {
     const url = window.location.href;
     if (navigator.share) {
