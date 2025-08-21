@@ -146,26 +146,33 @@ const AuctionRoom = ({ tournamentId, user }) => {
     }
   };
 
-  const fetchCurrentTeam = async () => {
+  const fetchCurrentTeam = async (teamsData = teams) => {
     try {
+      console.log('Fetching current team...');
       const response = await axios.get(`${API}/tournaments/${tournamentId}`);
       const tournament = response.data;
       
-      if (tournament.current_team_id) {
-        const team = teams.find(t => t.id === tournament.current_team_id);
+      if (tournament.current_team_id && teamsData.length > 0) {
+        const team = teamsData.find(t => t.id === tournament.current_team_id);
+        console.log('Current team:', team);
         setCurrentTeam(team);
         
         // Get current highest bid
-        const bidsResponse = await axios.get(`${API}/tournaments/${tournamentId}/bids`);
-        const teamBids = bidsResponse.data.filter(bid => bid.team_id === tournament.current_team_id);
-        if (teamBids.length > 0) {
-          const highestBid = teamBids.reduce((max, bid) => bid.amount > max.amount ? bid : max);
-          const bidder = participants.find(p => p.id === highestBid.user_id);
-          setCurrentBid({
-            amount: highestBid.amount,
-            username: bidder?.username || 'Unknown'
-          });
-        } else {
+        try {
+          const bidsResponse = await axios.get(`${API}/tournaments/${tournamentId}/bids`);
+          const teamBids = bidsResponse.data.filter(bid => bid.team_id === tournament.current_team_id);
+          if (teamBids.length > 0) {
+            const highestBid = teamBids.reduce((max, bid) => bid.amount > max.amount ? bid : max);
+            const bidder = participants.find(p => p.id === highestBid.user_id);
+            setCurrentBid({
+              amount: highestBid.amount,
+              username: bidder?.username || 'Unknown'
+            });
+          } else {
+            setCurrentBid(null);
+          }
+        } catch (bidError) {
+          console.log('No bids yet:', bidError.message);
           setCurrentBid(null);
         }
         
@@ -190,6 +197,9 @@ const AuctionRoom = ({ tournamentId, user }) => {
             });
           }, 1000);
         }
+      } else {
+        console.log('No current team ID or teams not loaded yet');
+        setCurrentTeam(null);
       }
     } catch (error) {
       console.error('Failed to fetch current team:', error);
