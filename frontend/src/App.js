@@ -537,6 +537,25 @@ const TournamentView = () => {
             </div>
           </div>
         </div>
+
+        {/* Available Teams Section */}
+        <div className="bg-gray-800 p-6 rounded-lg mt-6">
+          <h2 className="text-xl font-semibold mb-4">Available Teams ({tournament.teams.length})</h2>
+          <p className="text-gray-400 text-sm mb-4">
+            These teams will be available for bidding when the auction starts:
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-96 overflow-y-auto">
+            {teams
+              .filter(team => tournament.teams.includes(team.id))
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map(team => (
+              <div key={team.id} className="bg-gray-700 p-3 rounded-lg">
+                <div className="font-medium text-sm">{team.name}</div>
+                <div className="text-xs text-gray-400">{team.country}</div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
