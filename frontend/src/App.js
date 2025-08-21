@@ -381,6 +381,15 @@ const TournamentView = () => {
 
   const isAdmin = tournament.admin_id === user.id;
   const canStartAuction = isAdmin && tournament.status === 'pending' && participants.length >= 4;
+  
+  console.log('Tournament admin check:', {
+    tournament_admin_id: tournament.admin_id,
+    current_user_id: user.id,
+    isAdmin,
+    tournament_status: tournament.status,
+    participants_count: participants.length,
+    canStartAuction
+  });
 
   return (
     <div className="container mx-auto px-4 py-8">
