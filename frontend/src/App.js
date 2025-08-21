@@ -385,6 +385,7 @@ const TournamentView = () => {
   const [tournament, setTournament] = useState(null);
   const [participants, setParticipants] = useState([]);
   const [teams, setTeams] = useState([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const tournamentId = window.location.pathname.split('/')[2];
 
