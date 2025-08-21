@@ -74,6 +74,7 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/create" element={<CreateTournament />} />
             <Route path="/tournament/:id" element={<TournamentView />} />
+            <Route path="/auction/:id" element={<AuctionRoomWrapper />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>
