@@ -163,7 +163,7 @@ const Dashboard = () => {
         <div className="bg-gray-800 p-6 rounded-lg">
           <h2 className="text-2xl font-semibold mb-4">Create New Tournament</h2>
           <p className="text-gray-400 mb-4">
-            Start a new fantasy auction with your friends. Choose from Champions League or Europa League teams.
+            Start a new football auction with your friends. Choose from Champions League or Europa League teams.
           </p>
           <button 
             onClick={() => window.location.href = '/create'}
