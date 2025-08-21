@@ -1,7 +1,6 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import axios from "axios";
-import AuctionRoom from "./AuctionRoom";
 import "./App.css";
 
 // Context for global state
