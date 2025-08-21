@@ -297,7 +297,7 @@ class PIFAAuctionAPITester:
 
     def run_all_tests(self):
         """Run all API tests"""
-        print("🚀 Starting Fantasy Soccer API Tests")
+        print("🚀 Starting PIFA Auction API Tests")
         print(f"Testing against: {self.base_url}")
         print("=" * 50)
         
