@@ -490,13 +490,11 @@ const TournamentView = () => {
     }
   };
 
-  const showManualCopy = (text) => {
-    console.log('Showing manual copy prompt');
-    const message = `Please copy this tournament link manually:\n\n${text}\n\nShare it with your friends to join the tournament!`;
-    alert(message);
-    
-    // Also log to console for easy copying
-    console.log('Manual copy - Tournament URL:', text);
+  const resetUserForTesting = () => {
+    if (confirm('Reset user for testing? This will create a new user account and refresh the page.')) {
+      localStorage.removeItem('user');
+      window.location.reload();
+    }
   };
 
   if (!tournament) {
