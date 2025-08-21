@@ -413,12 +413,29 @@ const TournamentView = () => {
     }
   };
 
-  const startAuction = async () => {
-    try {
-      await axios.post(`${API}/tournaments/${tournamentId}/start-auction?admin_id=${user.id}`);
-      window.location.href = `/auction/${tournamentId}`;
-    } catch (error) {
-      alert('Failed to start auction: ' + error.response?.data?.detail);
+  const copyTournamentLink = () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      // Use native sharing on mobile
+      navigator.share({
+        title: tournament.name,
+        text: `Join my PIFA tournament: ${tournament.name}`,
+        url: url,
+      }).catch(console.error);
+    } else if (navigator.clipboard) {
+      // Copy to clipboard
+      navigator.clipboard.writeText(url).then(() => {
+        alert('Tournament link copied to clipboard!');
+      }).catch(() => {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = url;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        alert('Tournament link copied to clipboard!');
+      });
     }
   };
 
