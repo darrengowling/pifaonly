@@ -208,11 +208,12 @@ const AuctionRoom = ({ tournamentId, user }) => {
 
   const fetchSquads = async () => {
     try {
-      // This would need to be implemented in the backend
-      // For now, we'll use placeholder data
+      // For now, use placeholder data - this would be implemented later
+      console.log('Squad management will be implemented later');
       setSquads([]);
     } catch (error) {
       console.error('Failed to fetch squads:', error);
+      setSquads([]);
     }
   };
 
