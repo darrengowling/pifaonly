@@ -226,10 +226,57 @@ const AuctionRoom = ({ tournamentId, user }) => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  if (!tournament || !currentTeam) {
+  if (!tournament) {
     return (
       <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
         <div className="text-xl">Loading auction room...</div>
+      </div>
+    );
+  }
+
+  // Show different states based on tournament status
+  if (tournament.status !== 'auction_active') {
+    return (
+      <div className="min-h-screen bg-gray-900 text-white">
+        <div className="container mx-auto px-4 py-6">
+          <div className="bg-gray-800 p-8 rounded-lg text-center">
+            <h1 className="text-3xl font-bold mb-4">{tournament.name}</h1>
+            <div className="text-xl text-yellow-400 mb-4">
+              Auction Status: {tournament.status.replace('_', ' ').toUpperCase()}
+            </div>
+            {tournament.status === 'pending' && (
+              <p className="text-gray-400">Waiting for admin to start the auction...</p>
+            )}
+            {tournament.status === 'tournament_active' && (
+              <p className="text-gray-400">Tournament is in progress. Check back for results!</p>
+            )}
+            {tournament.status === 'completed' && (
+              <p className="text-gray-400">Tournament has ended. View results below.</p>
+            )}
+            <button
+              onClick={() => window.location.href = `/tournament/${tournamentId}`}
+              className="mt-6 bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg transition-colors"
+            >
+              Back to Tournament
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // If auction is active but no current team, show waiting state
+  if (!currentTeam) {
+    return (
+      <div className="min-h-screen bg-gray-900 text-white">
+        <div className="container mx-auto px-4 py-6">
+          <div className="bg-gray-800 p-8 rounded-lg text-center">
+            <h1 className="text-3xl font-bold mb-4">{tournament.name} - Live Auction</h1>
+            <div className="text-xl text-green-400 mb-4">Auction is Active!</div>
+            <p className="text-gray-400 mb-6">Preparing next team for bidding...</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>
+          </div>
+        </div>
       </div>
     );
   }
