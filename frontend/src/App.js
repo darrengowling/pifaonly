@@ -647,9 +647,15 @@ const TournamentView = () => {
               {tournament.participants.includes(user.id) ? 'Yes' : 'No'}
             </span></div>
             <div className="mt-2 pt-2 border-t border-gray-600">
-              <div className="text-xs text-gray-400">
+              <div className="text-xs text-gray-400 mb-2">
                 To test joining as a new user: Use incognito/private browser window or different device
               </div>
+              <button
+                onClick={resetUserForTesting}
+                className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-xs transition-colors"
+              >
+                Reset User (Testing Only)
+              </button>
             </div>
           </div>
         </div>
