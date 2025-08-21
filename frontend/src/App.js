@@ -482,16 +482,5 @@ const TournamentView = () => {
   );
 };
 
-// Auction Room Component (Placeholder for now)
-const AuctionRoom = () => {
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold mb-4">Live Auction Room</h1>
-        <p className="text-gray-400">Coming soon - Real-time bidding interface</p>
-      </div>
-    </div>
-  );
-};
 
 export default App;
