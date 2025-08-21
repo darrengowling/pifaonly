@@ -155,7 +155,7 @@ const Dashboard = () => {
       </div>
 
       <header className="mb-8">
-        <h1 className="text-4xl font-bold text-center mb-2">Fantasy Soccer Auction</h1>
+        <h1 className="text-4xl font-bold text-center mb-2">Friends of PIFA</h1>
         <p className="text-center text-gray-400">Welcome back, {user.username}!</p>
       </header>
 
