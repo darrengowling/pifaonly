@@ -282,7 +282,7 @@ const UserGuide = ({ isOpen, onClose }) => {
         {/* Header */}
         <div className="bg-gray-700 px-6 py-4 border-b border-gray-600">
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-bold text-white">Fantasy Soccer Auction - User Guide</h2>
+            <h2 className="text-xl font-bold text-white">Friends of PIFA - User Guide</h2>
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-white text-2xl font-bold"
