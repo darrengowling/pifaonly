@@ -25,6 +25,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [tournaments, setTournaments] = useState([]);
   const [currentTournament, setCurrentTournament] = useState(null);
+  const [showUserGuide, setShowUserGuide] = useState(false);
 
   // Initialize user (simulate login)
   useEffect(() => {
