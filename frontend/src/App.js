@@ -525,8 +525,8 @@ const TournamentView = () => {
     );
   }
 
-  const isAdmin = tournament.admin_id === user.id;
-  const canStartAuction = isAdmin && tournament.status === 'pending' && participants.length >= 4;
+  const isAdmin = tournament && tournament.admin_id === user.id;
+  const canStartAuction = tournament && isAdmin && tournament.status === 'pending' && participants.length >= 4;
   
   console.log('Tournament admin check:', {
     tournament_admin_id: tournament.admin_id,
