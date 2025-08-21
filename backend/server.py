@@ -363,6 +363,11 @@ async def start_auction(tournament_id: str, admin_id: str):
     return {"message": "Auction started"}
 
 # Bidding routes
+@api_router.get("/tournaments/{tournament_id}/bids", response_model=List[Bid])
+async def get_tournament_bids(tournament_id: str):
+    bids = await db.bids.find({"tournament_id": tournament_id}).to_list(1000)
+    return [Bid(**bid) for bid in bids]
+
 @api_router.post("/tournaments/{tournament_id}/bid")
 async def place_bid(tournament_id: str, user_id: str, amount: int):
     tournament = await db.tournaments.find_one({"id": tournament_id})
