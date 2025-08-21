@@ -1,6 +1,6 @@
-# Fantasy Soccer Auction - User Testing Guide 🎮⚽
+# Friends of PIFA - User Testing Guide 🎮⚽
 
-Welcome to the Fantasy Soccer Auction app! This guide will help you navigate and test all features easily.
+Welcome to the Friends of PIFA app! This guide will help you navigate and test all features easily.
 
 ## 📋 Quick Start Checklist
 
