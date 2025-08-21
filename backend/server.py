@@ -244,7 +244,7 @@ async def initialize_teams():
 # API Routes
 @api_router.get("/")
 async def root():
-    return {"message": "Fantasy Soccer Auction API"}
+    return {"message": "Friends of PIFA API"}
 
 # User routes
 @api_router.post("/users", response_model=User)
