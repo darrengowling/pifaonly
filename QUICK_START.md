@@ -1,4 +1,4 @@
-# Fantasy Soccer Auction - Quick Start Guide ⚡
+# Friends of PIFA - Quick Start Guide ⚡
 
 ## 🎯 For Your Friends Testing the App
 
