@@ -499,6 +499,17 @@ const TournamentView = () => {
     console.log('Manual copy - Tournament URL:', text);
   };
 
+  const joinTournamentFromDetail = async () => {
+    try {
+      await axios.post(`${API}/tournaments/${tournamentId}/join?user_id=${user.id}`);
+      window.location.reload();
+    } catch (error) {
+      alert('Failed to join tournament: ' + error.response?.data?.detail);
+    }
+  };
+
+  const canJoinTournament = !tournament.participants.includes(user.id) && tournament.status === 'pending';
+
   const resetUserForTesting = () => {
     if (confirm('Reset user for testing? This will create a new user account and refresh the page.')) {
       localStorage.removeItem('user');
