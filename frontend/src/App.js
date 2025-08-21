@@ -517,6 +517,11 @@ const TournamentView = () => {
 
   const canJoinTournament = tournament && !tournament.participants.includes(user.id) && tournament.status === 'pending';
 
+  const refreshTournamentData = async () => {
+    console.log('Manual refresh triggered');
+    await fetchTournamentData();
+  };
+
   const resetUserForTesting = () => {
     if (confirm('Reset user for testing? This will create a new user account and refresh the page.')) {
       localStorage.removeItem('user');
