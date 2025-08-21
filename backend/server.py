@@ -430,6 +430,19 @@ async def place_bid(tournament_id: str, user_id: str, amount: int):
     
     return {"message": "Bid placed successfully"}
 
+# Squad routes
+@api_router.get("/tournaments/{tournament_id}/squads", response_model=List[Squad])
+async def get_tournament_squads(tournament_id: str):
+    squads = await db.squads.find({"tournament_id": tournament_id}).to_list(1000)
+    return [Squad(**squad) for squad in squads]
+
+@api_router.get("/tournaments/{tournament_id}/squads/{user_id}", response_model=Squad)
+async def get_user_squad(tournament_id: str, user_id: str):
+    squad = await db.squads.find_one({"tournament_id": tournament_id, "user_id": user_id})
+    if not squad:
+        raise HTTPException(status_code=404, detail="Squad not found")
+    return Squad(**squad)
+
 # Chat routes
 @api_router.post("/tournaments/{tournament_id}/chat")
 async def send_chat_message(tournament_id: str, user_id: str, message_data: ChatMessageCreate):
