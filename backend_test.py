@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 import time
 
-class FantasySoccerAPITester:
+class PIFAAuctionAPITester:
     def __init__(self, base_url="https://soccer-league-bid.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
@@ -335,7 +335,7 @@ class FantasySoccerAPITester:
             return 1
 
 def main():
-    tester = FantasySoccerAPITester()
+    tester = PIFAAuctionAPITester()
     return tester.run_all_tests()
 
 if __name__ == "__main__":
