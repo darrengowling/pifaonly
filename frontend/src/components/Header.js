@@ -10,7 +10,7 @@ const Header = ({ user, currentPage = 'dashboard' }) => {
               <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">⚽</span>
               </div>
-              <h1 className="text-xl font-bold text-white">Fantasy Soccer Auction</h1>
+              <h1 className="text-xl font-bold text-white">Friends of PIFA</h1>
             </div>
             
             <nav className="hidden md:flex gap-6">
