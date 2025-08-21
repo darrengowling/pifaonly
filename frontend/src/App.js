@@ -140,7 +140,7 @@ const Dashboard = () => {
       <div className="bg-gradient-to-r from-blue-900 to-purple-900 border border-blue-600 p-6 rounded-lg mb-8">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-bold text-white mb-2">🎮 Welcome to Fantasy Soccer Auction Testing!</h2>
+            <h2 className="text-xl font-bold text-white mb-2">🎮 Welcome to Friends of PIFA Testing!</h2>
             <p className="text-blue-200 text-sm">
               New here? Check out the <strong>User Testing Guide</strong> (help button ?) for step-by-step instructions on how to create tournaments, join auctions, and test all features.
             </p>
