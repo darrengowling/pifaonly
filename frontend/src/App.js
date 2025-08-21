@@ -656,29 +656,31 @@ const TournamentView = () => {
         </div>
 
         {/* Debug Info for Testing */}
-        <div className="bg-gray-800 p-4 rounded-lg mt-6">
-          <h3 className="text-lg font-semibold mb-2">User Info (for testing)</h3>
-          <div className="text-sm space-y-1">
-            <div>Your User ID: <span className="font-mono text-blue-400">{user.id}</span></div>
-            <div>Your Username: <span className="text-green-400">{user.username}</span></div>
-            <div>Tournament Admin: <span className="font-mono text-yellow-400">{tournament.admin_id}</span></div>
-            <div>You are Admin: <span className={isAdmin ? 'text-green-400' : 'text-red-400'}>{isAdmin ? 'Yes' : 'No'}</span></div>
-            <div>Already Joined: <span className={tournament.participants.includes(user.id) ? 'text-green-400' : 'text-red-400'}>
-              {tournament.participants.includes(user.id) ? 'Yes' : 'No'}
-            </span></div>
-            <div className="mt-2 pt-2 border-t border-gray-600">
-              <div className="text-xs text-gray-400 mb-2">
-                To test joining as a new user: Use incognito/private browser window or different device
+        {tournament && (
+          <div className="bg-gray-800 p-4 rounded-lg mt-6">
+            <h3 className="text-lg font-semibold mb-2">User Info (for testing)</h3>
+            <div className="text-sm space-y-1">
+              <div>Your User ID: <span className="font-mono text-blue-400">{user.id}</span></div>
+              <div>Your Username: <span className="text-green-400">{user.username}</span></div>
+              <div>Tournament Admin: <span className="font-mono text-yellow-400">{tournament.admin_id}</span></div>
+              <div>You are Admin: <span className={isAdmin ? 'text-green-400' : 'text-red-400'}>{isAdmin ? 'Yes' : 'No'}</span></div>
+              <div>Already Joined: <span className={tournament.participants.includes(user.id) ? 'text-green-400' : 'text-red-400'}>
+                {tournament.participants.includes(user.id) ? 'Yes' : 'No'}
+              </span></div>
+              <div className="mt-2 pt-2 border-t border-gray-600">
+                <div className="text-xs text-gray-400 mb-2">
+                  To test joining as a new user: Use incognito/private browser window or different device
+                </div>
+                <button
+                  onClick={resetUserForTesting}
+                  className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-xs transition-colors"
+                >
+                  Reset User (Testing Only)
+                </button>
               </div>
-              <button
-                onClick={resetUserForTesting}
-                className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-xs transition-colors"
-              >
-                Reset User (Testing Only)
-              </button>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Available Teams Section */}
         <div className="bg-gray-800 p-6 rounded-lg mt-6">
