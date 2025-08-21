@@ -52,7 +52,7 @@ const UserGuide = ({ isOpen, onClose }) => {
           <div>
             <h4 className="font-semibold text-white mb-2">Tournament Settings:</h4>
             <ul className="text-gray-300 text-sm space-y-2">
-              <li><strong>Tournament Name:</strong> Choose something memorable like "Friends CL 2025"</li>
+              <li><strong>Tournament Name:</strong> Choose something memorable like "PIFA Champions League 2025"</li>
               <li><strong>Competition:</strong> Champions League (32 teams) or Europa League (32 teams)</li>
               <li><strong>Teams per User:</strong> Recommended 4-6 teams each</li>
               <li><strong>Budget:</strong> Everyone gets £500m to spend</li>
@@ -268,7 +268,7 @@ const UserGuide = ({ isOpen, onClose }) => {
 
           <div className="bg-blue-900 border border-blue-600 p-3 rounded-lg">
             <p className="text-blue-200 text-sm">
-              <strong>🎮 Testing Tip:</strong> Play like you want to win! Realistic competitive behavior makes for better testing.
+              <strong>🎮 Testing Tip:</strong> Play like you want to win! Realistic competitive behaviour makes for better testing.
             </p>
           </div>
         </div>
