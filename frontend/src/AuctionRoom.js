@@ -44,7 +44,11 @@ const AuctionRoom = ({ tournamentId, user }) => {
 
   const connectWebSocket = () => {
     try {
-      const ws = new WebSocket(`${WS_URL}/ws/${tournamentId}`);
+      // Fix WebSocket URL for production
+      const wsUrl = BACKEND_URL.replace('https://', 'wss://').replace('http://', 'ws://');
+      const ws = new WebSocket(`${wsUrl}/ws/${tournamentId}`);
+      
+      console.log('Connecting to WebSocket:', `${wsUrl}/ws/${tournamentId}`);
       
       ws.onopen = () => {
         console.log('WebSocket connected');
@@ -53,6 +57,7 @@ const AuctionRoom = ({ tournamentId, user }) => {
       
       ws.onmessage = (event) => {
         const message = JSON.parse(event.data);
+        console.log('WebSocket message:', message);
         handleWebSocketMessage(message);
       };
       
@@ -65,11 +70,13 @@ const AuctionRoom = ({ tournamentId, user }) => {
       
       ws.onerror = (error) => {
         console.error('WebSocket error:', error);
+        setIsConnected(false);
       };
       
       setSocket(ws);
     } catch (error) {
       console.error('Failed to connect WebSocket:', error);
+      setIsConnected(false);
     }
   };
 
