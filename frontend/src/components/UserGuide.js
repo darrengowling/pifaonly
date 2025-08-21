@@ -16,9 +16,9 @@ const UserGuide = ({ isOpen, onClose }) => {
           </div>
           
           <div>
-            <h4 className="font-semibold text-white mb-2">What is Fantasy Soccer Auction?</h4>
+            <h4 className="font-semibold text-white mb-2">What is Friends of PIFA?</h4>
             <p className="text-gray-300 text-sm">
-              Bid against friends for exclusive ownership of real soccer teams (Champions League & Europa League). 
+              Bid against friends for exclusive ownership of real football teams (Champions League & Europa League). 
               Your teams earn points based on real-world performance: 1 point per goal, 3 points per win, 1 point per draw.
             </p>
           </div>
