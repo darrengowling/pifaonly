@@ -1,6 +1,6 @@
-# 🎮⚽ Fantasy Soccer Auction - Friends Testing Invite!
+# 🎮⚽ Friends of PIFA - Testing Invite!
 
-Hey! I've built a fantasy soccer auction app and need your help testing it. It's really fun - you bid against friends for real soccer teams and compete based on their actual performance!
+Hey! I've built a fantasy football auction app for our PIFA society and need your help testing it. It's really fun - you bid against friends for real football teams and compete based on their actual performance!
 
 ## 🚀 Quick Start (Takes 5 minutes)
 
