@@ -120,6 +120,12 @@ const Dashboard = () => {
     }
   };
 
+  const showGuide = () => {
+    // This will be handled by the parent App component
+    const event = new CustomEvent('showUserGuide');
+    window.dispatchEvent(event);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Welcome Banner */}
