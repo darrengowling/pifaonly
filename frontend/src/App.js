@@ -402,22 +402,36 @@ const TournamentView = () => {
 
   const fetchTournamentData = async () => {
     try {
+      setIsRefreshing(true);
+      console.log('Fetching fresh tournament data...');
+      
       const [tournamentRes, teamsRes] = await Promise.all([
-        axios.get(`${API}/tournaments/${tournamentId}`),
-        axios.get(`${API}/teams`)
+        axios.get(`${API}/tournaments/${tournamentId}?_t=${Date.now()}`), // Add timestamp to prevent caching
+        axios.get(`${API}/teams?_t=${Date.now()}`)
       ]);
+      
+      console.log('Tournament data updated:', {
+        participants: tournamentRes.data.participants.length,
+        status: tournamentRes.data.status
+      });
       
       setTournament(tournamentRes.data);
       setTeams(teamsRes.data);
 
       // Fetch participant details
-      const participantPromises = tournamentRes.data.participants.map(id => 
-        axios.get(`${API}/users/${id}`)
-      );
-      const participantResponses = await Promise.all(participantPromises);
-      setParticipants(participantResponses.map(res => res.data));
+      if (tournamentRes.data.participants.length > 0) {
+        const participantPromises = tournamentRes.data.participants.map(id => 
+          axios.get(`${API}/users/${id}?_t=${Date.now()}`)
+        );
+        const participantResponses = await Promise.all(participantPromises);
+        setParticipants(participantResponses.map(res => res.data));
+      } else {
+        setParticipants([]);
+      }
     } catch (error) {
       console.error('Failed to fetch tournament data:', error);
+    } finally {
+      setIsRefreshing(false);
     }
   };
 
