@@ -156,7 +156,7 @@ const Dashboard = () => {
 
       <header className="mb-8">
         <h1 className="text-4xl font-bold text-center mb-2">Friends of PIFA</h1>
-        <p className="text-center text-gray-400">Welcome back, {user.username}!</p>
+        <p className="text-center text-gray-400">Build your squad, compete with friends</p>
       </header>
 
       <div className="grid md:grid-cols-2 gap-8">
