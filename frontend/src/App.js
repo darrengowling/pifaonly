@@ -502,23 +502,32 @@ const TournamentView = () => {
             </div>
           </div>
 
-          {canStartAuction && (
-            <button
-              onClick={startAuction}
-              className="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-semibold transition-colors mb-6"
-            >
-              Start Auction
-            </button>
-          )}
+          <div className="flex gap-4 mb-6">
+            {canStartAuction && (
+              <button
+                onClick={startAuction}
+                className="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-semibold transition-colors"
+              >
+                Start Auction
+              </button>
+            )}
 
-          {tournament.status === 'auction_active' && (
             <button
-              onClick={() => window.location.href = `/auction/${tournamentId}`}
-              className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold transition-colors mb-6"
+              onClick={copyTournamentLink}
+              className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold transition-colors"
             >
-              Join Live Auction
+              📋 Share Tournament
             </button>
-          )}
+
+            {tournament.status === 'auction_active' && (
+              <button
+                onClick={() => window.location.href = `/auction/${tournamentId}`}
+                className="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-lg font-semibold transition-colors"
+              >
+                Join Live Auction
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
