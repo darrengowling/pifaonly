@@ -122,6 +122,24 @@ const Dashboard = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Welcome Banner */}
+      <div className="bg-gradient-to-r from-blue-900 to-purple-900 border border-blue-600 p-6 rounded-lg mb-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-bold text-white mb-2">🎮 Welcome to Fantasy Soccer Auction Testing!</h2>
+            <p className="text-blue-200 text-sm">
+              New here? Check out the <strong>User Testing Guide</strong> (help button ?) for step-by-step instructions on how to create tournaments, join auctions, and test all features.
+            </p>
+          </div>
+          <button
+            onClick={() => window.parent.postMessage({ type: 'showUserGuide' }, '*')}
+            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-semibold transition-colors whitespace-nowrap"
+          >
+            View Guide
+          </button>
+        </div>
+      </div>
+
       <header className="mb-8">
         <h1 className="text-4xl font-bold text-center mb-2">Fantasy Soccer Auction</h1>
         <p className="text-center text-gray-400">Welcome back, {user.username}!</p>
