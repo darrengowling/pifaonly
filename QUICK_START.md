@@ -1,6 +1,6 @@
 # Friends of PIFA - Quick Start Guide ⚡
 
-## 🎯 For Your Friends Testing the App
+## 🎯 For Your PIFA Friends Testing the App
 
 **App URL:** https://soccer-league-bid.preview.emergentagent.com
 

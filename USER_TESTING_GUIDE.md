@@ -37,7 +37,7 @@ Welcome to the Friends of PIFA app! This guide will help you navigate and test a
 
 1. Click **"Create Tournament"** button on the dashboard
 2. Fill out the tournament form:
-   - **Tournament Name**: e.g., "Friends CL 2025/26"
+   - **Tournament Name**: e.g., "PIFA Champions League 2025/26"
    - **Competition**: Choose Champions League OR Europa League
    - **Teams per User**: Recommended 4-6 teams each
    - **Minimum Bid**: Use slider (£1m - £10m)
@@ -219,7 +219,7 @@ Once in a tournament, you'll see:
 2. **Test Edge Cases**: Try to break things (high bids, rapid clicking, etc.)
 3. **Communicate**: Use chat actively to test real-time features
 4. **Different Devices**: Test on mobile, tablet, desktop if possible
-5. **Take Screenshots**: Capture any weird behavior or bugs
+5. **Take Screenshots**: Capture any weird behaviour or bugs
 
 ---
 

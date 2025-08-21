@@ -62,7 +62,7 @@ Hey! I've built a fantasy football auction app for our PIFA society and need you
 
 ## 🏆 What's the Goal?
 
-I want to make this good enough that we'd actually play tournaments with real prizes! Your feedback is super valuable.
+I want to make this good enough for our PIFA society to actually run tournaments with real prizes! Your feedback is super valuable.
 
 **Key questions:**
 - Is it fun and engaging?
