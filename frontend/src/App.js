@@ -480,5 +480,12 @@ const TournamentView = () => {
   );
 };
 
+// Auction Room Wrapper Component
+const AuctionRoomWrapper = () => {
+  const { user } = useAppContext();
+  const tournamentId = window.location.pathname.split('/')[2];
+  
+  return <AuctionRoom tournamentId={tournamentId} user={user} />;
+};
 
 export default App;
