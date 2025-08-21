@@ -390,6 +390,13 @@ const TournamentView = () => {
 
   useEffect(() => {
     fetchTournamentData();
+    
+    // Set up auto-refresh every 5 seconds to sync data between devices
+    const refreshInterval = setInterval(() => {
+      fetchTournamentData();
+    }, 5000);
+    
+    return () => clearInterval(refreshInterval);
   }, [tournamentId]);
 
   const fetchTournamentData = async () => {
