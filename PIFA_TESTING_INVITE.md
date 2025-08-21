@@ -2,7 +2,7 @@
 
 **Hello PIFA Members!** 
 
-I've built a fantasy football auction app specifically for our society and need your help testing it before we launch it properly for PIFA competitions!
+I've built a football auction app specifically for our society and need your help testing it before we launch it properly for PIFA competitions!
 
 ## 🎯 What is Friends of PIFA?
 
