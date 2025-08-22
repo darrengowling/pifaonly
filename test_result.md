@@ -101,3 +101,49 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "The user is building a fantasy football auction app for friends to bid on real-life teams. There is a critical issue where bidding is not working - when users try to bid, the backend returns 'Squad not found' error. The app shows 'disconnected' and 'nothing happens' when attempting to bid. Investigation shows that the /bid endpoint is failing because squads are not being properly created or linked to participants when they join tournaments."
+
+backend:
+  - task: "Fix Squad Creation in join_tournament Function"
+    implemented: true
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "main"
+          comment: "Squad creation code exists in join_tournament function (lines 327-328) but bidding still fails with 'Squad not found' error. Need to investigate if squads are actually being created in database or if there's a data inconsistency issue."
+
+frontend:
+  - task: "Auction Room Bidding Interface"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/AuctionRoom.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "user"
+          comment: "User reports that bidding shows 'disconnected' and 'nothing happens' when attempting to bid. This is likely due to the backend Squad not found error."
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Fix Squad Creation in join_tournament Function"
+  stuck_tasks:
+    - "Fix Squad Creation in join_tournament Function"
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+    - agent: "main"
+      message: "Investigating the 'Squad not found' error during bidding. Found that squad creation code exists in join_tournament function but need to verify if it's actually working. Will test the join tournament functionality and squad creation process."
