@@ -196,6 +196,18 @@ metadata:
   test_sequence: 0
   run_ui: false
 
+  - task: "Join Tournament API Functionality"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "COMPREHENSIVE JOIN TOURNAMENT TESTING COMPLETED: Created specialized test suite to verify all join tournament functionality. VERIFIED: 1) POST /api/tournaments/{id}/join endpoint working correctly, 2) Users properly added to participants list, 3) Squads automatically created for all joining users, 4) Participant count increases correctly, 5) Multiple users can join same tournament successfully, 6) Join button logic conditions verified (!tournament.participants.includes(user.id) && tournament.participants.length < 8 && tournament.status !== 'completed'), 7) Duplicate join attempts properly prevented with 400 error. All 16/16 join tournament tests passed. The join tournament API is fully functional and ready for frontend integration."
+
 test_plan:
   current_focus: []
   stuck_tasks: []
@@ -213,3 +225,5 @@ agent_communication:
       message: "FRONTEND TESTING COMPLETE: Comprehensive testing of Friends of PIFA frontend completed. WORKING: Tournament creation, auction room interface, bidding functionality, chat system, user session management, Friends of PIFA branding. FIXED: Critical navigation issue by replacing window.location.href with React Router navigate()."
     - agent: "main"
       message: "ALL ISSUES RESOLVED: Both backend and frontend are fully functional. Backend squad creation fixed, frontend navigation working perfectly. The User Guide modal was intercepting clicks but once closed, all navigation works correctly. App is ready for production use."
+    - agent: "testing"
+      message: "JOIN TOURNAMENT TESTING COMPLETE: Created comprehensive test suite specifically for join tournament functionality as requested. VERIFIED: Join API endpoint working perfectly, users added to participants, squads created automatically, participant count tracking, multiple user joins, join button logic conditions, and duplicate prevention. All 16/16 specialized join tournament tests passed. Additionally confirmed all 15/15 general backend API tests still passing. The join tournament functionality is fully operational and ready for frontend integration."
