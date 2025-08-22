@@ -393,6 +393,7 @@ const CreateTournament = () => {
 // Tournament View Component
 const TournamentView = () => {
   const { user, API } = useAppContext();
+  const navigate = useNavigate();
   const [tournament, setTournament] = useState(null);
   const [participants, setParticipants] = useState([]);
   const [teams, setTeams] = useState([]);
