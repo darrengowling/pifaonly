@@ -346,7 +346,7 @@ async def start_auction(tournament_id: str, admin_id: str):
     random.shuffle(tournament_obj.teams)
     tournament_obj.status = TournamentStatus.AUCTION_ACTIVE
     tournament_obj.current_team_id = tournament_obj.teams[0] if tournament_obj.teams else None
-    tournament_obj.bid_end_time = datetime.utcnow() + timedelta(minutes=2)  # 2 minutes per team
+    tournament_obj.bid_end_time = datetime.utcnow() + timedelta(minutes=5)  # 5 minutes per team for testing
     
     await db.tournaments.update_one(
         {"id": tournament_id},
