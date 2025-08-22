@@ -761,38 +761,20 @@ const TournamentView = () => {
 
         {/* Debug Info for Testing */}
         {tournament && (
-          <div className="bg-gray-800 p-4 rounded-lg mt-6">
-            <h3 className="text-lg font-semibold mb-2">User Info (for testing)</h3>
-            <div className="text-sm space-y-1">
-              <div>Your User ID: <span className="font-mono text-blue-400">{user.id}</span></div>
-              <div>Your Username: <span className="text-green-400">{user.username}</span></div>
-              <div>Tournament Admin: <span className="font-mono text-yellow-400">{tournament.admin_id}</span></div>
-              <div>You are Admin: <span className={isAdmin ? 'text-green-400' : 'text-red-400'}>{isAdmin ? 'Yes' : 'No'}</span></div>
-              <div>Already Joined: <span className={tournament.participants.includes(user.id) ? 'text-green-400' : 'text-red-400'}>
-                {tournament.participants.includes(user.id) ? 'Yes' : 'No'}
-              </span></div>
-              <div className="mt-2 pt-2 border-t border-gray-600">
-                <div className="text-xs text-gray-400 mb-2">
-                  To test joining as a new user: Use incognito/private browser window or different device
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={resetUserForTesting}
-                    className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-xs transition-colors"
-                  >
-                    Reset User (Testing Only)
-                  </button>
-                  {!isAdmin && (
-                    <button
-                      onClick={becomeAdminForTesting}
-                      className="bg-yellow-600 hover:bg-yellow-700 px-3 py-1 rounded text-xs transition-colors"
-                    >
-                      Become Admin (Fix Bug)
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
+          <div className="bg-red-600 p-4 rounded-lg mt-6">
+            <h3 className="font-bold mb-2">🚨 TESTING INSTRUCTIONS FOR JOIN BUTTON</h3>
+            <p className="text-sm mb-2">
+              <strong>To test the join button:</strong>
+            </p>
+            <ol className="text-sm list-decimal list-inside space-y-1">
+              <li>Open this page in an <strong>incognito/private browser window</strong></li>
+              <li>You will be a different user and see the join button!</li>
+              <li>OR use two different browsers (Chrome + Firefox)</li>
+              <li>The join button appears for users who haven't joined yet</li>
+            </ol>
+            <p className="text-xs mt-2 text-red-200">
+              Join button logic: Show if user NOT in participants AND tournament not full AND not completed
+            </p>
           </div>
         )}
 
