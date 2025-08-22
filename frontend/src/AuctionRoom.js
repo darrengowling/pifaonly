@@ -308,6 +308,13 @@ const AuctionRoom = ({ tournamentId, user }) => {
             <div className="text-xl text-green-400 mb-4">Auction is Active!</div>
             <p className="text-gray-400 mb-6">Preparing next team for bidding...</p>
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>
+            {/* Debug info */}
+            <div className="mt-4 text-xs text-gray-500">
+              <div>Debug: currentTeam = {currentTeam ? 'SET' : 'NULL'}</div>
+              <div>Tournament status: {tournament?.status}</div>
+              <div>Current team ID: {tournament?.current_team_id}</div>
+              <div>Teams loaded: {teams.length}</div>
+            </div>
           </div>
         </div>
       </div>
