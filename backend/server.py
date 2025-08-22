@@ -449,6 +449,22 @@ async def update_tournament_admin(tournament_id: str, request_data: dict):
     
     return {"message": "Tournament admin updated successfully"}
 
+# Reset auction timer (for testing)
+@api_router.post("/tournaments/{tournament_id}/reset-timer")
+async def reset_auction_timer(tournament_id: str):
+    tournament = await db.tournaments.find_one({"id": tournament_id})
+    if not tournament:
+        raise HTTPException(status_code=404, detail="Tournament not found")
+    
+    # Reset the timer to 5 minutes from now
+    new_end_time = datetime.utcnow() + timedelta(minutes=5)
+    await db.tournaments.update_one(
+        {"id": tournament_id},
+        {"$set": {"bid_end_time": new_end_time}}
+    )
+    
+    return {"message": "Auction timer reset", "new_bid_end_time": new_end_time.isoformat()}
+
 # Squad routes
 @api_router.get("/tournaments/{tournament_id}/squads", response_model=List[Squad])
 async def get_tournament_squads(tournament_id: str):
