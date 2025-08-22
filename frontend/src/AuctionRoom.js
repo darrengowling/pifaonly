@@ -154,14 +154,27 @@ const AuctionRoom = ({ tournamentId, user }) => {
 
   const fetchCurrentTeam = async (teamsData = teams) => {
     try {
-      console.log('Fetching current team...');
+      console.log('Fetching current team...', {
+        tournamentId,
+        teamsDataLength: teamsData.length,
+        teamsState: teams.length
+      });
       const response = await axios.get(`${API}/tournaments/${tournamentId}`);
       const tournament = response.data;
       
+      console.log('Tournament current_team_id:', tournament.current_team_id);
+      console.log('Available teams sample:', teamsData.slice(0, 3).map(t => ({id: t.id, name: t.name})));
+      
       if (tournament.current_team_id && teamsData.length > 0) {
         const team = teamsData.find(t => t.id === tournament.current_team_id);
-        console.log('Current team:', team);
+        console.log('Team lookup result:', team);
+        console.log('Setting currentTeam state to:', team);
         setCurrentTeam(team);
+        
+        if (!team) {
+          console.error('Team not found! ID:', tournament.current_team_id);
+          console.log('All team IDs:', teamsData.map(t => t.id));
+        }
         
         // Get current highest bid
         try {
