@@ -195,9 +195,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Fix Squad Creation in join_tournament Function"
-  stuck_tasks:
-    - "Fix Squad Creation in join_tournament Function"
+    - "Navigation System"
+  stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
