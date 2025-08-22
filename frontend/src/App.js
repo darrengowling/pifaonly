@@ -31,11 +31,21 @@ function App() {
   useEffect(() => {
     const initUser = async () => {
       try {
-        // For demo purposes, create a test user
+        // Check if we have a persistent user in localStorage
+        const savedUser = localStorage.getItem('user');
+        if (savedUser) {
+          console.log('Found existing user session:', JSON.parse(savedUser));
+          setUser(JSON.parse(savedUser));
+          return;
+        }
+        
+        // Only create new user if no existing session
+        console.log('Creating new user session...');
         const username = `User_${Math.floor(Math.random() * 1000)}`;
         const email = `${username.toLowerCase()}@example.com`;
         
         const response = await axios.post(`${API}/users`, { username, email });
+        console.log('New user created:', response.data);
         setUser(response.data);
         localStorage.setItem('user', JSON.stringify(response.data));
       } catch (error) {
@@ -43,12 +53,7 @@ function App() {
       }
     };
 
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    } else {
-      initUser();
-    }
+    initUser();
 
     // Listen for custom events to show user guide
     const handleShowGuide = () => setShowUserGuide(true);
