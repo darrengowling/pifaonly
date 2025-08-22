@@ -107,7 +107,7 @@ user_problem_statement: "The user is building a fantasy football auction app for
 backend:
   - task: "Fix Squad Creation in join_tournament Function"
     implemented: true
-    working: false
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 1
     priority: "high"
@@ -119,6 +119,9 @@ backend:
         - working: false
           agent: "testing"
           comment: "CRITICAL BUG IDENTIFIED: Squad creation logic is flawed. When tournament is created, admin is auto-added to participants (line 287) but NO squad is created. Squad creation only happens in join_tournament (lines 327-328), but admin can't join again due to 'Already joined' check (lines 312-313). Result: Admin has no squad, causing 'Squad not found' error during bidding. FIX NEEDED: Create squad for admin during tournament creation in create_tournament function."
+        - working: true
+          agent: "testing"
+          comment: "FIXED: Added squad creation for admin user in create_tournament function (lines 293-295). Comprehensive testing confirms: 1) Tournament creation now creates squad for admin, 2) Additional users can join and get squads, 3) Auction can start successfully, 4) Bidding works without 'Squad not found' error, 5) All backend APIs (15/15 tests) passing. The bidding flow is now fully functional."
 
 frontend:
   - task: "Auction Room Bidding Interface"
