@@ -113,14 +113,17 @@ const AuctionRoom = ({ tournamentId, user }) => {
     try {
       console.log('Fetching initial data for tournament:', tournamentId);
       
-      // Fetch tournament first
-      const tournamentRes = await axios.get(`${API}/tournaments/${tournamentId}`);
-      console.log('Tournament data:', tournamentRes.data);
-      setTournament(tournamentRes.data);
+      // Fetch tournament and teams in parallel
+      const [tournamentRes, teamsRes] = await Promise.all([
+        axios.get(`${API}/tournaments/${tournamentId}`),
+        axios.get(`${API}/teams`)
+      ]);
       
-      // Fetch teams
-      const teamsRes = await axios.get(`${API}/teams`);
+      console.log('Tournament data:', tournamentRes.data);
       console.log('Teams loaded:', teamsRes.data.length);
+      
+      // Set tournament and teams state first
+      setTournament(tournamentRes.data);
       setTeams(teamsRes.data);
       
       // Fetch chat messages
@@ -141,8 +144,9 @@ const AuctionRoom = ({ tournamentId, user }) => {
         setParticipants(participantResponses.map(res => res.data));
       }
       
-      // Only fetch current team if auction is active
+      // NOW fetch current team using the loaded teams data
       if (tournamentRes.data.status === 'auction_active') {
+        console.log('Auction is active, fetching current team with loaded teams data');
         await fetchCurrentTeam(teamsRes.data);
       }
       
