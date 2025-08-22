@@ -122,6 +122,7 @@ function App() {
 // Dashboard Component
 const Dashboard = () => {
   const { user, tournaments, setTournaments, API } = useAppContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchTournaments();
@@ -174,7 +175,7 @@ const Dashboard = () => {
             Start a new football auction with your friends. Choose from Champions League or Europa League teams.
           </p>
           <button 
-            onClick={() => window.location.href = '/create'}
+            onClick={() => navigate('/create')}
             className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold transition-colors"
           >
             Create Tournament
