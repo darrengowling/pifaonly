@@ -542,7 +542,22 @@ const TournamentView = () => {
     await fetchTournamentData();
   };
 
-  const resetUserForTesting = () => {
+  const becomeAdminForTesting = async () => {
+    if (confirm('Make yourself admin of this tournament for testing?\n\nThis will update the tournament admin to your current user ID.')) {
+      try {
+        console.log('Attempting to become admin...');
+        // This is a testing-only workaround - update tournament admin
+        const response = await axios.patch(`${API}/tournaments/${tournamentId}/admin`, {
+          new_admin_id: user.id
+        });
+        alert('You are now the admin! Refreshing page...');
+        window.location.reload();
+      } catch (error) {
+        console.error('Failed to become admin:', error);
+        alert('Admin override failed. This tournament may have been created by another session.');
+      }
+    }
+  };
     if (confirm('Reset user for testing? This will create a new user account and refresh the page.\n\nNote: You will lose admin access to any tournaments you created with the current user.')) {
       console.log('Resetting user session...');
       localStorage.removeItem('user');
