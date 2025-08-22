@@ -40,17 +40,20 @@ function App() {
           return;
         }
         
-        // For testing, let's use the TestUser admin account to make things work
-        console.log('Creating TestUser admin session for testing...');
-        const testUser = {
-          id: "ba1f7cd2-0c0b-4a27-9f55-13d472fe250c",
-          username: "TestUser",
-          email: "testuser@example.com"
+        // Create a unique user for each session
+        console.log('Creating new user session...');
+        const timestamp = Date.now();
+        const newUserData = {
+          username: `User_${timestamp}`,
+          email: `user_${timestamp}@pifa.com`
         };
         
-        setUser(testUser);
-        localStorage.setItem('user', JSON.stringify(testUser));
-        console.log('TestUser admin session created for testing');
+        const response = await axios.post(`${API}/users`, newUserData);
+        const newUser = response.data;
+        
+        setUser(newUser);
+        localStorage.setItem('user', JSON.stringify(newUser));
+        console.log('New user session created:', newUser.username);
       } catch (error) {
         console.error('Failed to initialize user:', error);
       }
