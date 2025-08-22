@@ -145,10 +145,17 @@ const AuctionRoom = ({ tournamentId, user }) => {
         setParticipants(participantResponses.map(res => res.data));
       }
       
-      // NOW fetch current team using the loaded teams data
-      if (tournamentRes.data.status === 'auction_active') {
-        console.log('Auction is active, fetching current team with loaded teams data');
-        await fetchCurrentTeam(teamsRes.data);
+      // NOW fetch current team using the loaded teams data AND set it directly
+      if (tournamentRes.data.status === 'auction_active' && tournamentRes.data.current_team_id) {
+        console.log('Auction is active, finding current team directly');
+        const currentTeamDirect = teamsRes.data.find(t => t.id === tournamentRes.data.current_team_id);
+        console.log('Direct team lookup result:', currentTeamDirect);
+        
+        if (currentTeamDirect) {
+          console.log('Setting current team immediately');
+          setCurrentTeam(currentTeamDirect);
+          setForceRender(prev => prev + 1);
+        }
       }
       
     } catch (error) {
