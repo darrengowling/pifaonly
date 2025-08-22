@@ -200,7 +200,7 @@ const UserGuide = ({ isOpen, onClose }) => {
               
               <div>
                 <p className="text-yellow-300 font-medium text-sm">Don't see "Start Auction" button</p>
-                <p className="text-gray-300 text-sm">→ Only admin can start, need 4+ participants, tournament must be "pending"</p>
+                <p className="text-gray-300 text-sm">→ Only admin can start, need 2+ participants, tournament must be "pending"</p>
               </div>
               
               <div>
