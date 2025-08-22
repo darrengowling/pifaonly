@@ -450,7 +450,7 @@ const TournamentView = () => {
   const startAuction = async () => {
     try {
       await axios.post(`${API}/tournaments/${tournamentId}/start-auction?admin_id=${user.id}`);
-      window.location.href = `/auction/${tournamentId}`;
+      navigate(`/auction/${tournamentId}`);
     } catch (error) {
       alert('Failed to start auction: ' + error.response?.data?.detail);
     }
