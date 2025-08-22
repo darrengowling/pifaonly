@@ -111,11 +111,14 @@ backend:
     file: "/app/backend/server.py"
     stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: false
           agent: "main"
           comment: "Squad creation code exists in join_tournament function (lines 327-328) but bidding still fails with 'Squad not found' error. Need to investigate if squads are actually being created in database or if there's a data inconsistency issue."
+        - working: false
+          agent: "testing"
+          comment: "CRITICAL BUG IDENTIFIED: Squad creation logic is flawed. When tournament is created, admin is auto-added to participants (line 287) but NO squad is created. Squad creation only happens in join_tournament (lines 327-328), but admin can't join again due to 'Already joined' check (lines 312-313). Result: Admin has no squad, causing 'Squad not found' error during bidding. FIX NEEDED: Create squad for admin during tournament creation in create_tournament function."
 
 frontend:
   - task: "Auction Room Bidding Interface"
