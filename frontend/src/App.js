@@ -202,6 +202,7 @@ const Dashboard = () => {
 // Tournament Card Component
 const TournamentCard = ({ tournament }) => {
   const { user, API } = useAppContext();
+  const navigate = useNavigate();
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -259,7 +260,7 @@ const TournamentCard = ({ tournament }) => {
           </button>
         )}
         <button 
-          onClick={() => window.location.href = `/tournament/${tournament.id}`}
+          onClick={() => navigate(`/tournament/${tournament.id}`)}
           className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-sm transition-colors"
         >
           View
