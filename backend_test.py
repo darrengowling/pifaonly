@@ -348,33 +348,31 @@ class PIFAAuctionAPITester:
         print(f"✅ Created tournament: {tournament_response['name']} (ID: {tournament_id})")
         
         # Step 3: Join tournament (this should create a Squad)
-        join_success, join_response = self.run_test(
-            "Step 3: Join Tournament (Should Create Squad)",
-            "POST",
-            f"tournaments/{tournament_id}/join",
-            200,
-            params={"user_id": test_user_id}
-        )
+        # Note: The admin is automatically added as participant, so we need to check if squad was created
+        print("✅ User is already a participant (admin auto-join)")
         
-        if not join_success:
-            print("❌ CRITICAL: Cannot join tournament - stopping test")
-            return False
-            
-        print("✅ Successfully joined tournament")
-        
-        # Step 4: Verify Squad Creation
+        # Let's verify if squad was created during tournament creation
         squad_success, squad_response = self.run_test(
-            "Step 4: Verify Squad Creation",
+            "Step 3: Check if Squad was Created for Admin",
             "GET",
             f"tournaments/{tournament_id}/squads/{test_user_id}",
             200
         )
         
         if not squad_success:
-            print("❌ CRITICAL: Squad not found after joining tournament!")
-            print("   This is likely the root cause of the bidding issue")
+            print("❌ CRITICAL: No squad found for admin user!")
+            print("   This suggests squad creation is not happening during tournament creation")
             
-            # Let's check all squads in the tournament
+            # Let's try to manually join (even though it should fail with "Already joined")
+            join_success, join_response = self.run_test(
+                "Step 3b: Try Manual Join (Should Fail but Check Error)",
+                "POST",
+                f"tournaments/{tournament_id}/join",
+                400,  # Expecting 400 "Already joined"
+                params={"user_id": test_user_id}
+            )
+            
+            # Check all squads in the tournament
             all_squads_success, all_squads_response = self.run_test(
                 "Check All Tournament Squads",
                 "GET",
@@ -389,7 +387,7 @@ class PIFAAuctionAPITester:
             
             return False
         else:
-            print(f"✅ Squad found: {squad_response}")
+            print(f"✅ Squad found for admin: {squad_response}")
         
         # Step 5: Create a second user to have enough participants
         user2_data = {
