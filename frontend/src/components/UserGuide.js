@@ -80,7 +80,7 @@ const UserGuide = ({ isOpen, onClose }) => {
               <li>Get tournament link from the admin</li>
               <li>Visit the tournament page</li>
               <li>Click the green "Join" button</li>
-              <li>Wait for other participants (need 4-8 total)</li>
+              <li>Wait for other participants (need 2-8 total)</li>
               <li>Admin will start auction when ready</li>
             </ol>
           </div>
