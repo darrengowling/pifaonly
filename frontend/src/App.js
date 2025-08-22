@@ -775,6 +775,13 @@ const TournamentView = () => {
             <p className="text-xs mt-2 text-red-200">
               Join button logic: Show if user NOT in participants AND tournament not full AND not completed
             </p>
+            <div className="text-xs mt-2 bg-black bg-opacity-30 p-2 rounded">
+              <div>👤 Current User: {user.username} ({user.id.substring(0, 8)}...)</div>
+              <div>👑 Tournament Admin: {tournament.admin_id.substring(0, 8)}...</div>
+              <div>🎪 Status: {tournament.status}</div>
+              <div>👥 Participants: {tournament.participants.length}/8</div>
+              <div>🏆 Can Start Auction: {isAdmin && tournament.status === 'pending' && participants.length >= 2 ? 'YES' : 'NO'}</div>
+            </div>
           </div>
         )}
 
