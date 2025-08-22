@@ -295,6 +295,193 @@ class PIFAAuctionAPITester:
         
         return send_success and get_success
 
+    def test_squad_creation_and_bidding_flow(self):
+        """Test the complete squad creation and bidding flow to identify 'Squad not found' issue"""
+        print("\n🎯 TESTING SQUAD CREATION AND BIDDING FLOW")
+        print("=" * 60)
+        
+        # Step 1: Create a test user
+        timestamp = int(time.time())
+        user_data = {
+            "username": f"bidder_{timestamp}",
+            "email": f"bidder_{timestamp}@pifa.com"
+        }
+        
+        user_success, user_response = self.run_test(
+            "Step 1: Create Test User for Bidding",
+            "POST", 
+            "users",
+            200,
+            data=user_data
+        )
+        
+        if not user_success or 'id' not in user_response:
+            print("❌ CRITICAL: Cannot create user - stopping test")
+            return False
+            
+        test_user_id = user_response['id']
+        print(f"✅ Created user: {user_response['username']} (ID: {test_user_id})")
+        
+        # Step 2: Create a tournament
+        tournament_data = {
+            "name": f"Bidding Test Tournament {timestamp}",
+            "competition_type": "champions_league",
+            "teams_per_user": 4,
+            "minimum_bid": 1000000,
+            "entry_fee": 0
+        }
+        
+        tournament_success, tournament_response = self.run_test(
+            "Step 2: Create Tournament",
+            "POST",
+            "tournaments",
+            200,
+            data=tournament_data,
+            params={"admin_id": test_user_id}
+        )
+        
+        if not tournament_success or 'id' not in tournament_response:
+            print("❌ CRITICAL: Cannot create tournament - stopping test")
+            return False
+            
+        tournament_id = tournament_response['id']
+        print(f"✅ Created tournament: {tournament_response['name']} (ID: {tournament_id})")
+        
+        # Step 3: Join tournament (this should create a Squad)
+        join_success, join_response = self.run_test(
+            "Step 3: Join Tournament (Should Create Squad)",
+            "POST",
+            f"tournaments/{tournament_id}/join",
+            200,
+            params={"user_id": test_user_id}
+        )
+        
+        if not join_success:
+            print("❌ CRITICAL: Cannot join tournament - stopping test")
+            return False
+            
+        print("✅ Successfully joined tournament")
+        
+        # Step 4: Verify Squad Creation
+        squad_success, squad_response = self.run_test(
+            "Step 4: Verify Squad Creation",
+            "GET",
+            f"tournaments/{tournament_id}/squads/{test_user_id}",
+            200
+        )
+        
+        if not squad_success:
+            print("❌ CRITICAL: Squad not found after joining tournament!")
+            print("   This is likely the root cause of the bidding issue")
+            
+            # Let's check all squads in the tournament
+            all_squads_success, all_squads_response = self.run_test(
+                "Check All Tournament Squads",
+                "GET",
+                f"tournaments/{tournament_id}/squads",
+                200
+            )
+            
+            if all_squads_success:
+                print(f"   Total squads in tournament: {len(all_squads_response)}")
+                for squad in all_squads_response:
+                    print(f"   Squad found: user_id={squad.get('user_id')}, tournament_id={squad.get('tournament_id')}")
+            
+            return False
+        else:
+            print(f"✅ Squad found: {squad_response}")
+        
+        # Step 5: Create a second user to have enough participants
+        user2_data = {
+            "username": f"bidder2_{timestamp}",
+            "email": f"bidder2_{timestamp}@pifa.com"
+        }
+        
+        user2_success, user2_response = self.run_test(
+            "Step 5a: Create Second User",
+            "POST", 
+            "users",
+            200,
+            data=user2_data
+        )
+        
+        if user2_success:
+            user2_id = user2_response['id']
+            
+            # Join tournament with second user
+            join2_success, join2_response = self.run_test(
+                "Step 5b: Second User Join Tournament",
+                "POST",
+                f"tournaments/{tournament_id}/join",
+                200,
+                params={"user_id": user2_id}
+            )
+            
+            if not join2_success:
+                print("⚠️  Second user couldn't join, but continuing with auction test")
+        
+        # Step 6: Start Auction
+        auction_success, auction_response = self.run_test(
+            "Step 6: Start Auction",
+            "POST",
+            f"tournaments/{tournament_id}/start-auction",
+            200,
+            params={"admin_id": test_user_id}
+        )
+        
+        if not auction_success:
+            print("❌ CRITICAL: Cannot start auction - stopping test")
+            return False
+            
+        print("✅ Auction started successfully")
+        
+        # Step 7: Try to place a bid (this is where the error should occur)
+        bid_success, bid_response = self.run_test(
+            "Step 7: Place Bid (Testing for 'Squad not found' error)",
+            "POST",
+            f"tournaments/{tournament_id}/bid",
+            200,
+            params={"user_id": test_user_id, "amount": 2000000}
+        )
+        
+        if not bid_success:
+            print("❌ BIDDING FAILED - This confirms the 'Squad not found' issue!")
+            print(f"   Error response: {bid_response}")
+            
+            # Let's do some additional debugging
+            print("\n🔍 DEBUGGING INFORMATION:")
+            
+            # Check if squad still exists
+            debug_squad_success, debug_squad_response = self.run_test(
+                "Debug: Re-check Squad Existence",
+                "GET",
+                f"tournaments/{tournament_id}/squads/{test_user_id}",
+                200
+            )
+            
+            if debug_squad_success:
+                print("   ✅ Squad still exists - issue might be in bid endpoint logic")
+            else:
+                print("   ❌ Squad disappeared - issue in squad persistence")
+            
+            # Check tournament state
+            debug_tournament_success, debug_tournament_response = self.run_test(
+                "Debug: Check Tournament State",
+                "GET",
+                f"tournaments/{tournament_id}",
+                200
+            )
+            
+            if debug_tournament_success:
+                print(f"   Tournament status: {debug_tournament_response.get('status')}")
+                print(f"   Current team ID: {debug_tournament_response.get('current_team_id')}")
+                print(f"   Participants: {debug_tournament_response.get('participants')}")
+            
+            return False
+        else:
+            print("✅ Bid placed successfully - Squad creation and bidding flow working!")
+            return True
+
     def run_all_tests(self):
         """Run all API tests"""
         print("🚀 Starting PIFA Auction API Tests")
@@ -332,6 +519,22 @@ class PIFAAuctionAPITester:
             return 0
         else:
             print(f"⚠️  {self.tests_run - self.tests_passed} tests failed")
+            return 1
+
+    def run_squad_bidding_test_only(self):
+        """Run only the squad creation and bidding test"""
+        print("🎯 Running Squad Creation and Bidding Test Only")
+        print(f"Testing against: {self.base_url}")
+        print("=" * 60)
+        
+        success = self.test_squad_creation_and_bidding_flow()
+        
+        print("\n" + "=" * 60)
+        if success:
+            print("🎉 Squad creation and bidding test PASSED!")
+            return 0
+        else:
+            print("❌ Squad creation and bidding test FAILED!")
             return 1
 
 def main():
