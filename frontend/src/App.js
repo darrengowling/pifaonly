@@ -233,7 +233,9 @@ const TournamentCard = ({ tournament }) => {
     }
   };
 
-  const canJoin = !tournament.participants.includes(user.id) && tournament.status === 'pending';
+  const canJoin = !tournament.participants.includes(user.id) && 
+                  tournament.participants.length < 8 && 
+                  tournament.status !== 'completed';
 
   return (
     <div className="bg-gray-700 p-4 rounded-lg">
