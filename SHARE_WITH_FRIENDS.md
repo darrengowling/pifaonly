@@ -4,7 +4,7 @@ Hey! I've built a football auction app for our PIFA society and need your help t
 
 ## 🚀 Quick Start (Takes 5 minutes)
 
-**1. Open the app:** https://soccer-league-bid.preview.emergentagent.com
+**1. Open the app:** https://bid-champions.preview.emergentagent.com
 
 **2. Two options:**
 - **If you want to create:** Click "Create Tournament" and invite others
@@ -74,4 +74,4 @@ I want to make this good enough for our PIFA society to actually run tournaments
 
 **Thanks for helping test! Let me know how it goes! 🙏**
 
-*App URL: https://soccer-league-bid.preview.emergentagent.com*
+*App URL: https://bid-champions.preview.emergentagent.com*

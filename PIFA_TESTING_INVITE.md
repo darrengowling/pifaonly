@@ -15,7 +15,7 @@ A digital auction platform where PIFA members bid against each other for exclusi
 
 ## 🚀 Quick Test (15 minutes needed)
 
-**App Link:** https://soccer-league-bid.preview.emergentagent.com
+**App Link:** https://bid-champions.preview.emergentagent.com
 
 ### Setup Phase (2 minutes):
 1. **4+ PIFA members** open the app link
@@ -124,4 +124,4 @@ If testing goes well, we could use this for:
 *This could be the future of PIFA competitions - let's make it amazing together!*
 
 ---
-**App URL:** https://soccer-league-bid.preview.emergentagent.com
+**App URL:** https://bid-champions.preview.emergentagent.com

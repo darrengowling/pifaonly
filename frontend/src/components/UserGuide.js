@@ -12,7 +12,7 @@ const UserGuide = ({ isOpen, onClose }) => {
         <div className="space-y-4">
           <div className="bg-blue-900 border border-blue-600 p-4 rounded-lg">
             <h4 className="font-semibold text-blue-300 mb-2">App URL</h4>
-            <p className="text-blue-200 font-mono text-sm">https://soccer-league-bid.preview.emergentagent.com</p>
+            <p className="text-blue-200 font-mono text-sm">https://bid-champions.preview.emergentagent.com</p>
           </div>
           
           <div>
