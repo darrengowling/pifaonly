@@ -262,10 +262,24 @@ const AuctionRoom = ({ tournamentId, user }) => {
     const amount = parseInt(bidAmount) * 1000000; // Convert to pence
     
     try {
-      await axios.post(`${API}/tournaments/${tournamentId}/bid?user_id=${user.id}&amount=${amount}`);
+      console.log(`Placing bid: £${bidAmount}m (${amount} pence) for ${currentTeam.name}`);
+      const response = await axios.post(`${API}/tournaments/${tournamentId}/bid?user_id=${user.id}&amount=${amount}`);
+      console.log('Bid response:', response.data);
       setBidAmount('');
+      alert('Bid placed successfully!');
     } catch (error) {
+      console.error('Bid error:', error.response?.data);
       alert('Bid failed: ' + error.response?.data?.detail);
+    }
+  };
+
+  const resetTimer = async () => {
+    try {
+      const response = await axios.post(`${API}/tournaments/${tournamentId}/reset-timer`);
+      alert('Timer reset! You now have 5 minutes to bid.');
+      window.location.reload();
+    } catch (error) {
+      alert('Failed to reset timer: ' + error.response?.data?.detail);
     }
   };
 
