@@ -17,6 +17,7 @@ const AuctionRoom = ({ tournamentId, user }) => {
   const [teams, setTeams] = useState([]);
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [forceRender, setForceRender] = useState(0); // Force re-render trigger
   
   const chatContainerRef = useRef(null);
   const timerRef = useRef(null);
