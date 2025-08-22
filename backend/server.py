@@ -339,8 +339,8 @@ async def start_auction(tournament_id: str, admin_id: str):
     if tournament_obj.admin_id != admin_id:
         raise HTTPException(status_code=403, detail="Only admin can start auction")
     
-    if len(tournament_obj.participants) < 4:
-        raise HTTPException(status_code=400, detail="Need at least 4 participants")
+    if len(tournament_obj.participants) < 2:
+        raise HTTPException(status_code=400, detail="Need at least 2 participants")
     
     # Randomly shuffle teams for auction
     random.shuffle(tournament_obj.teams)
