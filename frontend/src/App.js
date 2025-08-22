@@ -740,12 +740,22 @@ const TournamentView = () => {
                 <div className="text-xs text-gray-400 mb-2">
                   To test joining as a new user: Use incognito/private browser window or different device
                 </div>
-                <button
-                  onClick={resetUserForTesting}
-                  className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-xs transition-colors"
-                >
-                  Reset User (Testing Only)
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={resetUserForTesting}
+                    className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-xs transition-colors"
+                  >
+                    Reset User (Testing Only)
+                  </button>
+                  {!isAdmin && (
+                    <button
+                      onClick={becomeAdminForTesting}
+                      className="bg-yellow-600 hover:bg-yellow-700 px-3 py-1 rounded text-xs transition-colors"
+                    >
+                      Become Admin (Fix Bug)
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
