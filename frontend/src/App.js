@@ -544,7 +544,10 @@ const TournamentView = () => {
     }
   };
 
-  const canJoinTournament = tournament && !tournament.participants.includes(user.id) && tournament.status === 'pending';
+  const canJoinTournament = tournament && 
+                            !tournament.participants.includes(user.id) && 
+                            tournament.participants.length < 8 && 
+                            tournament.status !== 'completed';
 
   const refreshTournamentData = async () => {
     console.log('Manual refresh triggered');
