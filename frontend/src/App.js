@@ -574,11 +574,31 @@ const TournamentView = () => {
     }
   };
 
-  const resetUserForTesting = () => {
+  const resetUserForTesting = async () => {
     if (confirm('Reset user for testing? This will create a new user account and refresh the page.\n\nNote: You will lose admin access to any tournaments you created with the current user.')) {
-      console.log('Resetting user session...');
-      localStorage.removeItem('user');
-      window.location.reload();
+      try {
+        // Clear existing user
+        localStorage.removeItem('user');
+        
+        // Create a new unique user
+        const timestamp = Date.now();
+        const newUserData = {
+          username: `User_${timestamp}`,
+          email: `user_${timestamp}@pifa.com`
+        };
+        
+        const response = await axios.post(`${API}/users`, newUserData);
+        const newUser = response.data;
+        
+        // Set new user and refresh
+        localStorage.setItem('user', JSON.stringify(newUser));
+        window.location.reload();
+      } catch (error) {
+        console.error('Failed to create new user:', error);
+        // Fallback to just clearing and refreshing
+        localStorage.removeItem('user');
+        window.location.reload();
+      }
     }
   };
 
