@@ -389,7 +389,7 @@ class PIFAAuctionAPITester:
         else:
             print(f"✅ Squad found for admin: {squad_response}")
         
-        # Step 5: Create a second user to have enough participants
+        # Step 4: Create a second user to have enough participants
         user2_data = {
             "username": f"bidder2_{timestamp}",
             "email": f"bidder2_{timestamp}@pifa.com"
