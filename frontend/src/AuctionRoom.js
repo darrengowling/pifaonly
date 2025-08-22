@@ -177,6 +177,9 @@ const AuctionRoom = ({ tournamentId, user }) => {
           console.log('Setting currentTeam state to:', team);
           setCurrentTeam(team);
           
+          // Force a re-render to ensure state update takes effect
+          setForceRender(prev => prev + 1);
+          
           // Force a re-render by updating tournament state too
           setTournament(tournament);
           
