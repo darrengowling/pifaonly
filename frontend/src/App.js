@@ -273,6 +273,7 @@ const TournamentCard = ({ tournament }) => {
 // Create Tournament Component
 const CreateTournament = () => {
   const { user, API } = useAppContext();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     competition_type: 'champions_league',
@@ -288,7 +289,7 @@ const CreateTournament = () => {
         `${API}/tournaments?admin_id=${user.id}`,
         formData
       );
-      window.location.href = `/tournament/${response.data.id}`;
+      navigate(`/tournament/${response.data.id}`);
     } catch (error) {
       alert('Failed to create tournament: ' + error.response?.data?.detail);
     }
@@ -371,7 +372,7 @@ const CreateTournament = () => {
           <div className="flex gap-4">
             <button
               type="button"
-              onClick={() => window.location.href = '/'}
+              onClick={() => navigate('/')}
               className="flex-1 bg-gray-600 hover:bg-gray-700 py-3 rounded-lg font-semibold transition-colors"
             >
               Cancel
