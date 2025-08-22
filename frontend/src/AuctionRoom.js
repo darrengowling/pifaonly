@@ -326,7 +326,7 @@ const AuctionRoom = ({ tournamentId, user }) => {
   }
 
   // If auction is active but no current team, show waiting state
-  if (!currentTeam) {
+  if (!currentTeam && tournament?.status === 'auction_active') {
     return (
       <div className="min-h-screen bg-gray-900 text-white">
         <div className="container mx-auto px-4 py-6">
@@ -336,11 +336,18 @@ const AuctionRoom = ({ tournamentId, user }) => {
             <p className="text-gray-400 mb-6">Preparing next team for bidding...</p>
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>
             {/* Debug info */}
-            <div className="mt-4 text-xs text-gray-500">
-              <div>Debug: currentTeam = {currentTeam ? 'SET' : 'NULL'}</div>
+            <div className="mt-4 text-xs text-gray-500 space-y-1">
+              <div>Debug: currentTeam = {currentTeam ? currentTeam.name : 'NULL'}</div>
               <div>Tournament status: {tournament?.status}</div>
               <div>Current team ID: {tournament?.current_team_id}</div>
               <div>Teams loaded: {teams.length}</div>
+              <div>Force render count: {forceRender}</div>
+              <button 
+                onClick={() => window.location.reload()} 
+                className="mt-2 bg-red-600 px-3 py-1 rounded text-xs"
+              >
+                Reload Page
+              </button>
             </div>
           </div>
         </div>
