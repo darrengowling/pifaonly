@@ -430,6 +430,25 @@ async def place_bid(tournament_id: str, user_id: str, amount: int):
     
     return {"message": "Bid placed successfully"}
 
+# Admin override route (for testing only)
+@api_router.patch("/tournaments/{tournament_id}/admin")
+async def update_tournament_admin(tournament_id: str, request_data: dict):
+    tournament = await db.tournaments.find_one({"id": tournament_id})
+    if not tournament:
+        raise HTTPException(status_code=404, detail="Tournament not found")
+    
+    new_admin_id = request_data.get("new_admin_id")
+    if not new_admin_id:
+        raise HTTPException(status_code=400, detail="new_admin_id required")
+    
+    # Update tournament admin
+    await db.tournaments.update_one(
+        {"id": tournament_id},
+        {"$set": {"admin_id": new_admin_id}}
+    )
+    
+    return {"message": "Tournament admin updated successfully"}
+
 # Squad routes
 @api_router.get("/tournaments/{tournament_id}/squads", response_model=List[Squad])
 async def get_tournament_squads(tournament_id: str):
