@@ -543,7 +543,8 @@ const TournamentView = () => {
   };
 
   const resetUserForTesting = () => {
-    if (confirm('Reset user for testing? This will create a new user account and refresh the page.')) {
+    if (confirm('Reset user for testing? This will create a new user account and refresh the page.\n\nNote: You will lose admin access to any tournaments you created with the current user.')) {
+      console.log('Resetting user session...');
       localStorage.removeItem('user');
       window.location.reload();
     }
