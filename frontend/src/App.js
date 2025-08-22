@@ -715,6 +715,29 @@ const TournamentView = () => {
             )}
           </div>
         </div>
+        
+        {/* Admin Helper for Testing */}
+        {tournament.status === 'pending' && !isAdmin && (
+          <div className="bg-yellow-600 p-3 rounded-lg mb-4">
+            <div className="text-sm">
+              <strong>🛠️ Admin Helper:</strong> To start the auction, you need to be the tournament admin.
+              The admin is <strong>{tournament.admin_id.substring(0, 8)}...</strong>
+            </div>
+            <div className="text-xs mt-1">
+              Open the original browser where you created this tournament to start the auction.
+            </div>
+          </div>
+        )}
+        
+        {/* Auction Already Active Helper */}
+        {tournament.status === 'auction_active' && (
+          <div className="bg-purple-600 p-3 rounded-lg mb-4">
+            <div className="text-sm">
+              <strong>🎪 Auction is Already Active!</strong> 
+              {isAdmin ? " As admin, you can join the live auction." : " You can join the live auction now."}
+            </div>
+          </div>
+        )}
 
         <div className="grid md:grid-cols-2 gap-6">
           <div className="bg-gray-800 p-6 rounded-lg">
