@@ -150,3 +150,5 @@ test_plan:
 agent_communication:
     - agent: "main"
       message: "Investigating the 'Squad not found' error during bidding. Found that squad creation code exists in join_tournament function but need to verify if it's actually working. Will test the join tournament functionality and squad creation process."
+    - agent: "testing"
+      message: "CRITICAL BUG FOUND: Squad creation logic is fundamentally broken. Admin users cannot get squads because: 1) Tournament creation auto-adds admin to participants but creates NO squad, 2) join_tournament creates squads but admin can't join (already participant), 3) Bidding fails with 'Squad not found'. SOLUTION: Add squad creation for admin in create_tournament function around line 290. This is a high-priority architectural fix needed for bidding to work."
