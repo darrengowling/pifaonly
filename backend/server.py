@@ -288,6 +288,11 @@ async def create_tournament(tournament: TournamentCreate, admin_id: str):
         teams=team_ids
     )
     await db.tournaments.insert_one(tournament_obj.dict())
+    
+    # Create squad for admin user
+    admin_squad = Squad(tournament_id=tournament_obj.id, user_id=admin_id)
+    await db.squads.insert_one(admin_squad.dict())
+    
     return tournament_obj
 
 @api_router.get("/tournaments", response_model=List[Tournament])
