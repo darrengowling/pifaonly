@@ -163,17 +163,23 @@ const AuctionRoom = ({ tournamentId, user }) => {
       const tournament = response.data;
       
       console.log('Tournament current_team_id:', tournament.current_team_id);
-      console.log('Available teams sample:', teamsData.slice(0, 3).map(t => ({id: t.id, name: t.name})));
       
       if (tournament.current_team_id && teamsData.length > 0) {
         const team = teamsData.find(t => t.id === tournament.current_team_id);
         console.log('Team lookup result:', team);
-        console.log('Setting currentTeam state to:', team);
-        setCurrentTeam(team);
         
-        if (!team) {
+        if (team) {
+          console.log('Setting currentTeam state to:', team);
+          setCurrentTeam(team);
+          
+          // Force a re-render by updating tournament state too
+          setTournament(tournament);
+          
+          console.log('State update completed');
+        } else {
           console.error('Team not found! ID:', tournament.current_team_id);
           console.log('All team IDs:', teamsData.map(t => t.id));
+          setCurrentTeam(null);
         }
         
         // Get current highest bid
