@@ -538,8 +538,14 @@ class PIFAAuctionAPITester:
             return 1
 
 def main():
+    import sys
     tester = PIFAAuctionAPITester()
-    return tester.run_all_tests()
+    
+    # Check if we should run only the squad bidding test
+    if len(sys.argv) > 1 and sys.argv[1] == "--squad-test":
+        return tester.run_squad_bidding_test_only()
+    else:
+        return tester.run_all_tests()
 
 if __name__ == "__main__":
     sys.exit(main())
