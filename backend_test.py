@@ -420,7 +420,7 @@ class PIFAAuctionAPITester:
         
         # Step 5: Start Auction
         auction_success, auction_response = self.run_test(
-            "Step 6: Start Auction",
+            "Step 5: Start Auction",
             "POST",
             f"tournaments/{tournament_id}/start-auction",
             200,
@@ -433,7 +433,7 @@ class PIFAAuctionAPITester:
             
         print("✅ Auction started successfully")
         
-        # Step 7: Try to place a bid (this is where the error should occur)
+        # Step 6: Try to place a bid (this is where the error should occur)
         bid_success, bid_response = self.run_test(
             "Step 7: Place Bid (Testing for 'Squad not found' error)",
             "POST",
