@@ -396,7 +396,7 @@ class PIFAAuctionAPITester:
         }
         
         user2_success, user2_response = self.run_test(
-            "Step 5a: Create Second User",
+            "Step 4a: Create Second User",
             "POST", 
             "users",
             200,
@@ -408,7 +408,7 @@ class PIFAAuctionAPITester:
             
             # Join tournament with second user
             join2_success, join2_response = self.run_test(
-                "Step 5b: Second User Join Tournament",
+                "Step 4b: Second User Join Tournament",
                 "POST",
                 f"tournaments/{tournament_id}/join",
                 200,
@@ -418,7 +418,7 @@ class PIFAAuctionAPITester:
             if not join2_success:
                 print("⚠️  Second user couldn't join, but continuing with auction test")
         
-        # Step 6: Start Auction
+        # Step 5: Start Auction
         auction_success, auction_response = self.run_test(
             "Step 6: Start Auction",
             "POST",
