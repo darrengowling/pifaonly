@@ -44,28 +44,27 @@ const AuctionRoom = ({ tournamentId, user }) => {
 
   const connectWebSocket = () => {
     try {
-      // Fix WebSocket URL for production
-      const wsUrl = BACKEND_URL.replace('https://', 'wss://').replace('http://', 'ws://');
+      // Simplified WebSocket URL - remove the protocol replacement
+      const wsUrl = 'wss://soccer-league-bid.preview.emergentagent.com';
       const ws = new WebSocket(`${wsUrl}/ws/${tournamentId}`);
       
       console.log('Connecting to WebSocket:', `${wsUrl}/ws/${tournamentId}`);
       
       ws.onopen = () => {
-        console.log('WebSocket connected');
+        console.log('WebSocket connected successfully');
         setIsConnected(true);
       };
       
       ws.onmessage = (event) => {
         const message = JSON.parse(event.data);
-        console.log('WebSocket message:', message);
+        console.log('WebSocket message received:', message);
         handleWebSocketMessage(message);
       };
       
-      ws.onclose = () => {
-        console.log('WebSocket disconnected');
+      ws.onclose = (event) => {
+        console.log('WebSocket disconnected:', event.code, event.reason);
         setIsConnected(false);
-        // Attempt to reconnect after 3 seconds
-        setTimeout(connectWebSocket, 3000);
+        // Don't auto-reconnect for now to avoid spam
       };
       
       ws.onerror = (error) => {
