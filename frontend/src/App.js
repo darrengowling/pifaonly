@@ -804,7 +804,19 @@ const TournamentView = () => {
               <div>🎪 Status: {tournament.status}</div>
               <div>👥 Participants: {tournament.participants.length}/8</div>
               <div>🏆 Can Start Auction: {isAdmin && tournament.status === 'pending' && participants.length >= 2 ? 'YES' : 'NO'}</div>
+              <div>🔍 Should Show Join: {!tournament.participants.includes(user.id) && tournament.participants.length < 8 && tournament.status !== 'completed' ? 'YES' : 'NO'}</div>
+              <div>✅ User in Participants: {tournament.participants.includes(user.id) ? 'YES' : 'NO'}</div>
             </div>
+            
+            {/* Emergency Join Button for Testing */}
+            {!tournament.participants.includes(user.id) && tournament.participants.length < 8 && (
+              <button
+                onClick={joinTournamentFromDetail}
+                className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-sm mt-2 transition-colors"
+              >
+                🚨 Emergency Join (If Join Button Missing)
+              </button>
+            )}
           </div>
         )}
 
