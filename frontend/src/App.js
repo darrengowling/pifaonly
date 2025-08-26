@@ -698,24 +698,29 @@ const TournamentView = () => {
 
   const copyTournamentLink = () => {
     const url = window.location.href;
-    console.log('Share button clicked, URL:', url);
+    const joinCode = tournament.join_code;
+    
+    console.log('Share button clicked, URL:', url, 'Join Code:', joinCode);
+    
+    // Create sharing message with join code emphasis
+    const shareMessage = `🎮 Join my PIFA tournament: ${tournament.name}\n\n🎯 Easy Join Code: ${joinCode}\nOr use this link: ${url}`;
     
     // Try native sharing first (mobile)
     if (navigator.share && /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
       console.log('Using native sharing');
       navigator.share({
         title: tournament.name,
-        text: `Join my PIFA tournament: ${tournament.name}`,
+        text: shareMessage,
         url: url,
       }).then(() => {
         console.log('Share successful');
       }).catch((error) => {
         console.log('Share failed, using clipboard fallback:', error);
-        copyToClipboard(url);
+        copyToClipboard(shareMessage);
       });
     } else {
       // Use clipboard for desktop
-      copyToClipboard(url);
+      copyToClipboard(shareMessage);
     }
   };
 
