@@ -53,6 +53,11 @@ const TeamLogo = ({ team, size = 'lg' }) => {
 const TeamDetailPanel = ({ team, isVisible, onClose, currentBid }) => {
   if (!isVisible || !team) return null;
 
+  // Format currency function
+  const formatCurrency = (amount) => {
+    return `£${(amount / 1000000).toFixed(0)}m`;
+  };
+
   // Mock team stats - in a real app, this would come from an API
   const getTeamStats = (team) => ({
     founded: team.founded || Math.floor(Math.random() * 50) + 1950,
