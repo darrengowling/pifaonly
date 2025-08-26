@@ -505,7 +505,138 @@ const Dashboard = () => {
   );
 };
 
-// Enhanced Tournament Card Component with champs1-inspired UX
+// Achievement System Component
+const AchievementBadge = ({ achievement, isEarned = false }) => {
+  return (
+    <div className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
+      isEarned 
+        ? 'bg-gradient-to-r from-yellow-600 to-orange-600 text-white' 
+        : 'bg-gray-700 text-gray-400'
+    }`}>
+      <span className="text-xl">{achievement.icon}</span>
+      <div>
+        <div className={`text-sm font-semibold ${isEarned ? 'text-white' : 'text-gray-300'}`}>
+          {achievement.name}
+        </div>
+        <div className="text-xs opacity-75">
+          {achievement.description}
+        </div>
+      </div>
+      {isEarned && (
+        <div className="ml-auto">
+          <span className="text-yellow-200 text-lg">★</span>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const UserAchievements = ({ user, tournaments }) => {
+  const userTournaments = tournaments.filter(t => t.participants.includes(user.id));
+  const createdTournaments = tournaments.filter(t => t.admin_id === user.id);
+  const activeTournaments = userTournaments.filter(t => t.status === 'auction_active');
+  const completedTournaments = userTournaments.filter(t => t.status === 'completed');
+
+  const achievements = [
+    {
+      id: 'first_join',
+      name: 'First Steps',
+      description: 'Join your first tournament',
+      icon: '🚀',
+      earned: userTournaments.length > 0
+    },
+    {
+      id: 'tournament_creator',
+      name: 'Tournament Host',
+      description: 'Create your first tournament',
+      icon: '🏆',
+      earned: createdTournaments.length > 0
+    },
+    {
+      id: 'social_butterfly',
+      name: 'Social Butterfly',
+      description: 'Join 3 different tournaments',
+      icon: '🦋',
+      earned: userTournaments.length >= 3
+    },
+    {
+      id: 'auction_master',
+      name: 'Auction Master',
+      description: 'Participate in 5 tournaments',
+      icon: '🎪',
+      earned: userTournaments.length >= 5
+    },
+    {
+      id: 'completionist',
+      name: 'Completionist',
+      description: 'Complete your first tournament',
+      icon: '🎯',
+      earned: completedTournaments.length > 0
+    },
+    {
+      id: 'multi_tasker',
+      name: 'Multi-tasker',
+      description: 'Have 3 active auctions simultaneously',
+      icon: '⚡',
+      earned: activeTournaments.length >= 3
+    }
+  ];
+
+  const earnedAchievements = achievements.filter(a => a.earned);
+  const nextAchievement = achievements.find(a => !a.earned);
+
+  return (
+    <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-12 h-12 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-full flex items-center justify-center">
+          <span className="text-xl">🏅</span>
+        </div>
+        <div>
+          <h2 className="text-xl font-semibold">Achievements</h2>
+          <p className="text-sm text-gray-400">
+            {earnedAchievements.length} of {achievements.length} unlocked
+          </p>
+        </div>
+      </div>
+
+      {/* Achievement Progress */}
+      <div className="mb-4">
+        <div className="flex justify-between text-sm text-gray-400 mb-1">
+          <span>Progress</span>
+          <span>{earnedAchievements.length}/{achievements.length}</span>
+        </div>
+        <div className="w-full bg-gray-600 rounded-full h-2">
+          <div 
+            className="h-2 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full transition-all duration-300"
+            style={{ width: `${(earnedAchievements.length / achievements.length) * 100}%` }}
+          ></div>
+        </div>
+      </div>
+
+      {/* Next Achievement */}
+      {nextAchievement && (
+        <div className="mb-4 p-3 bg-gray-700 rounded-lg border-l-4 border-yellow-500">
+          <div className="text-sm font-semibold text-yellow-400 mb-1">Next Goal:</div>
+          <AchievementBadge achievement={nextAchievement} isEarned={false} />
+        </div>
+      )}
+
+      {/* Earned Achievements */}
+      <div className="space-y-2 max-h-48 overflow-y-auto">
+        {earnedAchievements.map(achievement => (
+          <AchievementBadge key={achievement.id} achievement={achievement} isEarned={true} />
+        ))}
+        
+        {earnedAchievements.length === 0 && (
+          <div className="text-center py-4">
+            <div className="text-4xl mb-2">🎖️</div>
+            <p className="text-gray-400 text-sm">Start participating to unlock achievements!</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 const TournamentCard = ({ tournament }) => {
   const { user, API } = useAppContext();
   const navigate = useNavigate();
