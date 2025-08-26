@@ -562,20 +562,57 @@ const AuctionRoom = ({ tournamentId, user }) => {
               )}
             </div>
 
-            {/* Participants Status */}
+            {/* Enhanced Participants Status with Budget Tracking */}
             <div className="bg-gray-800 p-6 rounded-lg">
-              <h2 className="text-xl font-semibold mb-4">Participants</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {participants.map(participant => (
-                  <div key={participant.id} className="bg-gray-700 p-4 rounded-lg text-center">
-                    <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <span className="font-bold">{participant.username.charAt(0).toUpperCase()}</span>
+              <h2 className="text-xl font-semibold mb-4">Participants & Budgets</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+                {participants.map(participant => {
+                  const squad = userSquads[participant.id] || { total_spent: 0, teams_count: 0, remaining_budget: tournament.budget_per_user };
+                  const budgetPercentage = ((tournament.budget_per_user - squad.remaining_budget) / tournament.budget_per_user) * 100;
+                  
+                  return (
+                    <div key={participant.id} className="bg-gray-700 p-4 rounded-lg">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-white ${
+                          participant.id === user.id ? 'bg-blue-600 ring-2 ring-blue-400' : 'bg-gray-600'
+                        }`}>
+                          {participant.username.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-medium text-sm">
+                            {participant.username}
+                            {participant.id === user.id && <span className="text-blue-400 ml-1">(You)</span>}
+                          </div>
+                          <div className="text-xs text-gray-400">
+                            {squad.teams_count}/{tournament.teams_per_user} teams
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Budget Bar */}
+                      <div className="mb-2">
+                        <div className="flex justify-between text-xs text-gray-400 mb-1">
+                          <span>Budget Used</span>
+                          <span>{budgetPercentage.toFixed(0)}%</span>
+                        </div>
+                        <div className="w-full bg-gray-600 rounded-full h-2">
+                          <div 
+                            className={`h-2 rounded-full transition-all duration-300 ${
+                              budgetPercentage > 80 ? 'bg-red-500' : 
+                              budgetPercentage > 60 ? 'bg-yellow-500' : 'bg-green-500'
+                            }`}
+                            style={{ width: `${Math.min(budgetPercentage, 100)}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-between text-xs">
+                        <span className="text-gray-400">Spent: {formatCurrency(squad.total_spent)}</span>
+                        <span className="text-green-400 font-medium">Left: {formatCurrency(squad.remaining_budget)}</span>
+                      </div>
                     </div>
-                    <div className="font-medium text-sm">{participant.username}</div>
-                    <div className="text-xs text-gray-400">£450m left</div> {/* Placeholder */}
-                    <div className="text-xs text-gray-400">0/4 teams</div> {/* Placeholder */}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>
