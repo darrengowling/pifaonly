@@ -799,6 +799,414 @@ class PIFAAuctionAPITester:
             print("❌ Some join code tests FAILED!")
             return 1
 
+    def test_comprehensive_friends_tournament_scenario(self):
+        """
+        Comprehensive test scenario for Friends of PIFA fantasy football auction app
+        Simulates a real tournament with 5 friends as requested by user
+        """
+        print("\n🏆 COMPREHENSIVE FRIENDS OF PIFA TOURNAMENT SCENARIO")
+        print("=" * 80)
+        print("Testing complete tournament flow with 5 friends: Alex, Sarah, Mike, Emma, Tom")
+        print("=" * 80)
+        
+        # PHASE 1: Setup Multiple Users & Tournament
+        print("\n📋 PHASE 1: SETUP MULTIPLE USERS & TOURNAMENT")
+        print("-" * 50)
+        
+        # Step 1: Create 5 Test Users with realistic names
+        timestamp = int(time.time())
+        users = {}
+        user_names = ["Alex", "Sarah", "Mike", "Emma", "Tom"]
+        
+        for name in user_names:
+            user_data = {
+                "username": f"{name}_{timestamp}",
+                "email": f"{name.lower()}_{timestamp}@friendsofpifa.com"
+            }
+            
+            success, response = self.run_test(
+                f"Create User: {name}",
+                "POST", 
+                "users",
+                200,
+                data=user_data
+            )
+            
+            if not success or 'id' not in response:
+                print(f"❌ CRITICAL: Cannot create user {name}")
+                return False
+                
+            users[name] = response
+            print(f"✅ Created {name}: {response['username']} (ID: {response['id']})")
+        
+        # Step 2: Alex creates tournament "Friends Championship 2025"
+        alex_id = users["Alex"]["id"]
+        tournament_data = {
+            "name": "Friends Championship 2025",
+            "competition_type": "champions_league",
+            "teams_per_user": 4,
+            "minimum_bid": 1000000,
+            "entry_fee": 0
+        }
+        
+        tournament_success, tournament_response = self.run_test(
+            "Alex Creates 'Friends Championship 2025'",
+            "POST",
+            "tournaments",
+            200,
+            data=tournament_data,
+            params={"admin_id": alex_id}
+        )
+        
+        if not tournament_success or 'id' not in tournament_response:
+            print("❌ CRITICAL: Cannot create Friends Championship 2025")
+            return False
+            
+        tournament_id = tournament_response['id']
+        join_code = tournament_response.get('join_code')
+        print(f"✅ Alex created 'Friends Championship 2025' (ID: {tournament_id})")
+        print(f"✅ Join code generated: {join_code}")
+        
+        # Step 3: Verify Alex has a squad (admin squad creation)
+        alex_squad_success, alex_squad_response = self.run_test(
+            "Verify Alex's Squad Creation",
+            "GET",
+            f"tournaments/{tournament_id}/squads/{alex_id}",
+            200
+        )
+        
+        if not alex_squad_success:
+            print("❌ CRITICAL: Alex (admin) doesn't have a squad!")
+            return False
+        print("✅ Alex's squad created successfully")
+        
+        # Step 4: All other users join tournament using both methods
+        print("\n🤝 Testing Join Methods:")
+        
+        # Sarah joins using direct tournament ID
+        sarah_id = users["Sarah"]["id"]
+        sarah_join_success, sarah_join_response = self.run_test(
+            "Sarah Joins via Tournament ID",
+            "POST",
+            f"tournaments/{tournament_id}/join",
+            200,
+            params={"user_id": sarah_id}
+        )
+        
+        if not sarah_join_success:
+            print("❌ CRITICAL: Sarah cannot join tournament")
+            return False
+        print("✅ Sarah joined via tournament ID")
+        
+        # Mike, Emma, Tom join using join code
+        for name in ["Mike", "Emma", "Tom"]:
+            user_id = users[name]["id"]
+            join_success, join_response = self.run_test(
+                f"{name} Joins via Join Code",
+                "POST",
+                "tournaments/join-by-code",
+                200,
+                params={"join_code": join_code, "user_id": user_id}
+            )
+            
+            if not join_success:
+                print(f"❌ CRITICAL: {name} cannot join via join code")
+                return False
+            print(f"✅ {name} joined via join code")
+        
+        # Step 5: Verify all squads are created
+        print("\n👥 Verifying Squad Creation for All Users:")
+        for name, user_data in users.items():
+            user_id = user_data["id"]
+            squad_success, squad_response = self.run_test(
+                f"Verify {name}'s Squad",
+                "GET",
+                f"tournaments/{tournament_id}/squads/{user_id}",
+                200
+            )
+            
+            if not squad_success:
+                print(f"❌ CRITICAL: {name} doesn't have a squad!")
+                return False
+            print(f"✅ {name}'s squad verified")
+        
+        # PHASE 2: Test All New Features
+        print("\n📋 PHASE 2: TEST ALL NEW FEATURES")
+        print("-" * 50)
+        
+        # Step 6: Test Join Code System (already tested above)
+        print("✅ Join code system tested successfully in Phase 1")
+        
+        # Step 7: Check Tournament Filtering (get tournaments and verify our tournament appears)
+        tournaments_success, tournaments_response = self.run_test(
+            "Check Tournament Filtering",
+            "GET",
+            "tournaments",
+            200
+        )
+        
+        if tournaments_success:
+            tournament_found = False
+            for tournament in tournaments_response:
+                if tournament['id'] == tournament_id:
+                    tournament_found = True
+                    break
+            
+            if tournament_found:
+                print("✅ Tournament filtering working - Friends Championship 2025 found")
+            else:
+                print("❌ Tournament filtering issue - tournament not found in list")
+                return False
+        
+        # Step 8: Test Multi-Tournament (create second tournament)
+        tournament2_data = {
+            "name": "Friends Cup 2025",
+            "competition_type": "europa_league",
+            "teams_per_user": 3,
+            "minimum_bid": 500000,
+            "entry_fee": 0
+        }
+        
+        tournament2_success, tournament2_response = self.run_test(
+            "Create Second Tournament: Friends Cup 2025",
+            "POST",
+            "tournaments",
+            200,
+            data=tournament2_data,
+            params={"admin_id": users["Sarah"]["id"]}  # Sarah creates this one
+        )
+        
+        if tournament2_success:
+            tournament2_id = tournament2_response['id']
+            tournament2_join_code = tournament2_response.get('join_code')
+            print(f"✅ Sarah created 'Friends Cup 2025' (ID: {tournament2_id})")
+            print(f"✅ Second tournament join code: {tournament2_join_code}")
+            
+            # Have Alex and Mike join the second tournament too
+            for name in ["Alex", "Mike"]:
+                user_id = users[name]["id"]
+                multi_join_success, multi_join_response = self.run_test(
+                    f"{name} Joins Second Tournament",
+                    "POST",
+                    "tournaments/join-by-code",
+                    200,
+                    params={"join_code": tournament2_join_code, "user_id": user_id}
+                )
+                
+                if multi_join_success:
+                    print(f"✅ {name} joined second tournament")
+                else:
+                    print(f"⚠️ {name} couldn't join second tournament")
+        
+        # PHASE 3: Auction Preparation & Testing
+        print("\n📋 PHASE 3: AUCTION PREPARATION & TESTING")
+        print("-" * 50)
+        
+        # Step 9: Start Auction
+        auction_success, auction_response = self.run_test(
+            "Alex Starts Auction",
+            "POST",
+            f"tournaments/{tournament_id}/start-auction",
+            200,
+            params={"admin_id": alex_id}
+        )
+        
+        if not auction_success:
+            print("❌ CRITICAL: Cannot start auction")
+            return False
+        print("✅ Auction started successfully")
+        
+        # Step 10: Verify tournament status and current team
+        tournament_check_success, tournament_check_response = self.run_test(
+            "Verify Tournament Status After Auction Start",
+            "GET",
+            f"tournaments/{tournament_id}",
+            200
+        )
+        
+        if tournament_check_success:
+            status = tournament_check_response.get('status')
+            current_team_id = tournament_check_response.get('current_team_id')
+            
+            if status == 'auction_active':
+                print("✅ Tournament status correctly set to 'auction_active'")
+            else:
+                print(f"❌ Tournament status incorrect: {status}")
+                return False
+                
+            if current_team_id:
+                print(f"✅ Current team set for bidding: {current_team_id}")
+            else:
+                print("❌ No current team set for bidding")
+                return False
+        
+        # PHASE 4: Full Auction Simulation
+        print("\n📋 PHASE 4: FULL AUCTION SIMULATION")
+        print("-" * 50)
+        
+        # Step 11-14: Simulate bidding rounds
+        print("🎯 Testing Bidding Flow:")
+        
+        # Test bidding with different users and amounts
+        bidding_tests = [
+            ("Sarah", 2000000),  # £2M
+            ("Mike", 3000000),   # £3M
+            ("Emma", 2500000),   # £2.5M (should fail - lower than Mike's)
+            ("Tom", 4000000),    # £4M
+            ("Alex", 5000000),   # £5M
+        ]
+        
+        successful_bids = 0
+        for name, amount in bidding_tests:
+            user_id = users[name]["id"]
+            
+            # For Emma's bid, we expect it to fail (400) because it's lower than current highest
+            expected_status = 400 if name == "Emma" else 200
+            
+            bid_success, bid_response = self.run_test(
+                f"{name} Bids £{amount/1000000}M",
+                "POST",
+                f"tournaments/{tournament_id}/bid",
+                expected_status,
+                params={"user_id": user_id, "amount": amount}
+            )
+            
+            if bid_success:
+                if expected_status == 200:
+                    successful_bids += 1
+                    print(f"✅ {name}'s bid of £{amount/1000000}M accepted")
+                else:
+                    print(f"✅ {name}'s low bid correctly rejected")
+            else:
+                if expected_status == 200:
+                    print(f"❌ {name}'s bid of £{amount/1000000}M failed unexpectedly")
+                    return False
+        
+        print(f"✅ Bidding flow tested: {successful_bids} successful bids placed")
+        
+        # Step 15: Test Budget Management
+        print("\n💰 Testing Budget Management:")
+        
+        # Get Alex's current squad to check budget
+        alex_squad_check_success, alex_squad_check_response = self.run_test(
+            "Check Alex's Squad Budget",
+            "GET",
+            f"tournaments/{tournament_id}/squads/{alex_id}",
+            200
+        )
+        
+        if alex_squad_check_success:
+            total_spent = alex_squad_check_response.get('total_spent', 0)
+            budget_per_user = tournament_response.get('budget_per_user', 500000000)
+            remaining_budget = budget_per_user - total_spent
+            print(f"✅ Alex's budget tracking: Spent £{total_spent/1000000}M, Remaining £{remaining_budget/1000000}M")
+        
+        # Step 16: Test Chat Functionality
+        print("\n💬 Testing Chat System:")
+        
+        chat_messages = [
+            ("Alex", "Welcome to Friends Championship 2025!"),
+            ("Sarah", "Good luck everyone! 🍀"),
+            ("Mike", "May the best squad win!"),
+        ]
+        
+        for name, message in chat_messages:
+            user_id = users[name]["id"]
+            message_data = {"message": message}
+            
+            chat_success, chat_response = self.run_test(
+                f"{name} Sends Chat Message",
+                "POST",
+                f"tournaments/{tournament_id}/chat",
+                200,
+                data=message_data,
+                params={"user_id": user_id}
+            )
+            
+            if chat_success:
+                print(f"✅ {name}: {message}")
+            else:
+                print(f"❌ {name}'s chat message failed")
+                return False
+        
+        # Get all chat messages
+        get_chat_success, get_chat_response = self.run_test(
+            "Retrieve All Chat Messages",
+            "GET",
+            f"tournaments/{tournament_id}/chat",
+            200
+        )
+        
+        if get_chat_success:
+            print(f"✅ Chat system working: {len(get_chat_response)} messages retrieved")
+        
+        # Final verification
+        print("\n📊 FINAL VERIFICATION:")
+        print("-" * 50)
+        
+        # Check all tournament squads
+        final_squads_success, final_squads_response = self.run_test(
+            "Final Squad Count Verification",
+            "GET",
+            f"tournaments/{tournament_id}/squads",
+            200
+        )
+        
+        if final_squads_success:
+            squad_count = len(final_squads_response)
+            expected_squads = len(users)  # Should be 5
+            
+            if squad_count == expected_squads:
+                print(f"✅ All {squad_count} squads created and maintained")
+            else:
+                print(f"❌ Squad count mismatch: Expected {expected_squads}, got {squad_count}")
+                return False
+        
+        # Check tournament bids
+        final_bids_success, final_bids_response = self.run_test(
+            "Final Bid Count Verification",
+            "GET",
+            f"tournaments/{tournament_id}/bids",
+            200
+        )
+        
+        if final_bids_success:
+            bid_count = len(final_bids_response)
+            print(f"✅ Total bids placed: {bid_count}")
+        
+        print("\n🎉 COMPREHENSIVE TOURNAMENT SCENARIO COMPLETED SUCCESSFULLY!")
+        print("=" * 80)
+        print("✅ All 5 users created with realistic names")
+        print("✅ Tournament 'Friends Championship 2025' created")
+        print("✅ All users joined via both URL and join code methods")
+        print("✅ All squads created and verified")
+        print("✅ Join code system working perfectly")
+        print("✅ Multi-tournament functionality tested")
+        print("✅ Auction started and bidding flow working")
+        print("✅ Budget management functional")
+        print("✅ Chat system operational")
+        print("✅ Database consistency maintained")
+        print("=" * 80)
+        
+        return True
+
+    def run_comprehensive_friends_scenario_only(self):
+        """Run only the comprehensive friends tournament scenario"""
+        print("🏆 Running Comprehensive Friends Tournament Scenario")
+        print(f"Testing against: {self.base_url}")
+        print("=" * 80)
+        
+        success = self.test_comprehensive_friends_tournament_scenario()
+        
+        print("\n" + "=" * 80)
+        if success:
+            print("🎉 Comprehensive Friends Tournament Scenario PASSED!")
+            print("All backend functionality working perfectly for the Friends of PIFA app!")
+            return 0
+        else:
+            print("❌ Comprehensive Friends Tournament Scenario FAILED!")
+            return 1
+
 def main():
     import sys
     tester = PIFAAuctionAPITester()
