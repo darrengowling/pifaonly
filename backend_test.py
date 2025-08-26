@@ -1428,6 +1428,355 @@ class PIFAAuctionAPITester:
             print("❌ Database Cleanup FAILED!")
             return 1
 
+    def test_user_registration_scenarios(self):
+        """
+        Test specific user registration scenarios as requested in the review
+        Focus on: User creation, tournament join with new users, join by code with new users, database persistence
+        """
+        print("\n🔍 USER REGISTRATION TESTING - CRITICAL ISSUE INVESTIGATION")
+        print("=" * 80)
+        print("Testing user registration during tournament joining as reported by user")
+        print("=" * 80)
+        
+        # SCENARIO 1: Test User Creation Endpoint
+        print("\n📋 SCENARIO 1: TEST USER CREATION ENDPOINT")
+        print("-" * 60)
+        
+        timestamp = int(time.time())
+        
+        # Test 1a: Create a new user via POST /api/users
+        user_data = {
+            "username": f"newuser_{timestamp}",
+            "email": f"newuser_{timestamp}@test.com"
+        }
+        
+        user_success, user_response = self.run_test(
+            "1a: Create New User via POST /api/users",
+            "POST", 
+            "users",
+            200,
+            data=user_data
+        )
+        
+        if not user_success or 'id' not in user_response:
+            print("❌ CRITICAL: User creation endpoint failing!")
+            return False
+            
+        new_user_id = user_response['id']
+        print(f"✅ User created successfully: {user_response['username']} (ID: {new_user_id})")
+        
+        # Test 1b: Verify the user is returned correctly
+        get_user_success, get_user_response = self.run_test(
+            "1b: Verify User Can Be Retrieved",
+            "GET",
+            f"users/{new_user_id}",
+            200
+        )
+        
+        if not get_user_success:
+            print("❌ CRITICAL: Created user cannot be retrieved!")
+            return False
+        print("✅ User retrieval working correctly")
+        
+        # Test 1c: Check if user appears in any user lists (no direct endpoint, but we'll verify via tournament join)
+        print("✅ User creation endpoint fully functional")
+        
+        # SCENARIO 2: Test Tournament Join Flow with New User
+        print("\n📋 SCENARIO 2: TEST TOURNAMENT JOIN FLOW WITH NEW USER")
+        print("-" * 60)
+        
+        # Test 2a: Create a fresh tournament
+        admin_data = {
+            "username": f"admin_{timestamp}",
+            "email": f"admin_{timestamp}@test.com"
+        }
+        
+        admin_success, admin_response = self.run_test(
+            "2a: Create Admin User for Tournament",
+            "POST", 
+            "users",
+            200,
+            data=admin_data
+        )
+        
+        if not admin_success:
+            print("❌ CRITICAL: Cannot create admin user")
+            return False
+            
+        admin_id = admin_response['id']
+        
+        tournament_data = {
+            "name": f"Registration Test Tournament {timestamp}",
+            "competition_type": "champions_league",
+            "teams_per_user": 4,
+            "minimum_bid": 1000000,
+            "entry_fee": 0
+        }
+        
+        tournament_success, tournament_response = self.run_test(
+            "2b: Create Fresh Tournament",
+            "POST",
+            "tournaments",
+            200,
+            data=tournament_data,
+            params={"admin_id": admin_id}
+        )
+        
+        if not tournament_success or 'id' not in tournament_response:
+            print("❌ CRITICAL: Cannot create tournament")
+            return False
+            
+        tournament_id = tournament_response['id']
+        join_code = tournament_response.get('join_code')
+        print(f"✅ Tournament created: {tournament_response['name']} (ID: {tournament_id})")
+        print(f"✅ Join code: {join_code}")
+        
+        # Test 2c: Try to have a NEW user join the tournament
+        new_joiner_data = {
+            "username": f"joiner_{timestamp}",
+            "email": f"joiner_{timestamp}@test.com"
+        }
+        
+        joiner_success, joiner_response = self.run_test(
+            "2c: Create New User for Tournament Join",
+            "POST", 
+            "users",
+            200,
+            data=new_joiner_data
+        )
+        
+        if not joiner_success:
+            print("❌ CRITICAL: Cannot create new joiner user")
+            return False
+            
+        joiner_id = joiner_response['id']
+        print(f"✅ New joiner created: {joiner_response['username']} (ID: {joiner_id})")
+        
+        # Test 2d: Join tournament with new user
+        join_success, join_response = self.run_test(
+            "2d: New User Joins Tournament",
+            "POST",
+            f"tournaments/{tournament_id}/join",
+            200,
+            params={"user_id": joiner_id}
+        )
+        
+        if not join_success:
+            print("❌ CRITICAL: New user cannot join tournament!")
+            print(f"   Error response: {join_response}")
+            return False
+        print("✅ New user successfully joined tournament")
+        
+        # Test 2e: Verify user gets added to participants
+        tournament_check_success, tournament_check_response = self.run_test(
+            "2e: Verify User Added to Participants",
+            "GET",
+            f"tournaments/{tournament_id}",
+            200
+        )
+        
+        if tournament_check_success:
+            participants = tournament_check_response.get('participants', [])
+            if joiner_id not in participants:
+                print(f"❌ CRITICAL: Joiner {joiner_id} not in participants: {participants}")
+                return False
+            print(f"✅ User correctly added to participants: {participants}")
+        
+        # Test 2f: Verify squad creation happens automatically during join
+        squad_success, squad_response = self.run_test(
+            "2f: Verify Squad Created During Join",
+            "GET",
+            f"tournaments/{tournament_id}/squads/{joiner_id}",
+            200
+        )
+        
+        if not squad_success:
+            print("❌ CRITICAL: Squad not created automatically during tournament join!")
+            return False
+        print("✅ Squad automatically created during tournament join")
+        
+        # SCENARIO 3: Test Join by Code Flow with New User
+        print("\n📋 SCENARIO 3: TEST JOIN BY CODE FLOW WITH NEW USER")
+        print("-" * 60)
+        
+        # Test 3a: Create another new user for join-by-code test
+        code_joiner_data = {
+            "username": f"codejoiner_{timestamp}",
+            "email": f"codejoiner_{timestamp}@test.com"
+        }
+        
+        code_joiner_success, code_joiner_response = self.run_test(
+            "3a: Create New User for Join-by-Code Test",
+            "POST", 
+            "users",
+            200,
+            data=code_joiner_data
+        )
+        
+        if not code_joiner_success:
+            print("❌ CRITICAL: Cannot create code joiner user")
+            return False
+            
+        code_joiner_id = code_joiner_response['id']
+        print(f"✅ Code joiner created: {code_joiner_response['username']} (ID: {code_joiner_id})")
+        
+        # Test 3b: Try to join using join-by-code endpoint with new user
+        join_by_code_success, join_by_code_response = self.run_test(
+            "3b: New User Joins via Join Code",
+            "POST",
+            "tournaments/join-by-code",
+            200,
+            params={"join_code": join_code, "user_id": code_joiner_id}
+        )
+        
+        if not join_by_code_success:
+            print("❌ CRITICAL: New user cannot join via join code!")
+            print(f"   Error response: {join_by_code_response}")
+            return False
+        print("✅ New user successfully joined via join code")
+        
+        # Test 3c: Verify user creation and tournament joining
+        code_tournament_check_success, code_tournament_check_response = self.run_test(
+            "3c: Verify Code Joiner Added to Participants",
+            "GET",
+            f"tournaments/{tournament_id}",
+            200
+        )
+        
+        if code_tournament_check_success:
+            participants = code_tournament_check_response.get('participants', [])
+            if code_joiner_id not in participants:
+                print(f"❌ CRITICAL: Code joiner {code_joiner_id} not in participants: {participants}")
+                return False
+            print(f"✅ Code joiner correctly added to participants")
+        
+        # Test 3d: Verify squad creation for code joiner
+        code_squad_success, code_squad_response = self.run_test(
+            "3d: Verify Squad Created for Code Joiner",
+            "GET",
+            f"tournaments/{tournament_id}/squads/{code_joiner_id}",
+            200
+        )
+        
+        if not code_squad_success:
+            print("❌ CRITICAL: Squad not created for code joiner!")
+            return False
+        print("✅ Squad created for code joiner")
+        
+        # SCENARIO 4: Database Verification
+        print("\n📋 SCENARIO 4: DATABASE VERIFICATION")
+        print("-" * 60)
+        
+        # Test 4a: Check if users are actually being saved to the database
+        all_users_created = [new_user_id, admin_id, joiner_id, code_joiner_id]
+        
+        for i, user_id in enumerate(all_users_created):
+            user_names = ["NewUser", "Admin", "Joiner", "CodeJoiner"]
+            db_check_success, db_check_response = self.run_test(
+                f"4a.{i+1}: Verify {user_names[i]} Persisted in Database",
+                "GET",
+                f"users/{user_id}",
+                200
+            )
+            
+            if not db_check_success:
+                print(f"❌ CRITICAL: {user_names[i]} not persisted in database!")
+                return False
+            print(f"✅ {user_names[i]} correctly persisted in database")
+        
+        # Test 4b: Verify user data persistence (check specific fields)
+        for i, user_id in enumerate(all_users_created):
+            user_names = ["NewUser", "Admin", "Joiner", "CodeJoiner"]
+            persistence_success, persistence_response = self.run_test(
+                f"4b.{i+1}: Check {user_names[i]} Data Integrity",
+                "GET",
+                f"users/{user_id}",
+                200
+            )
+            
+            if persistence_success:
+                required_fields = ['id', 'username', 'email', 'created_at']
+                missing_fields = [field for field in required_fields if field not in persistence_response]
+                
+                if missing_fields:
+                    print(f"❌ CRITICAL: {user_names[i]} missing fields: {missing_fields}")
+                    return False
+                print(f"✅ {user_names[i]} data integrity verified")
+        
+        # Test 4c: Check if there are any database errors (by verifying all squads exist)
+        all_squad_success, all_squad_response = self.run_test(
+            "4c: Verify All Squads Exist in Database",
+            "GET",
+            f"tournaments/{tournament_id}/squads",
+            200
+        )
+        
+        if all_squad_success:
+            expected_squads = 3  # admin + joiner + code_joiner
+            actual_squads = len(all_squad_response)
+            
+            if actual_squads != expected_squads:
+                print(f"❌ CRITICAL: Squad count mismatch. Expected {expected_squads}, got {actual_squads}")
+                return False
+            print(f"✅ All {actual_squads} squads correctly stored in database")
+        
+        # Test 4d: No registration errors should occur - test by attempting another user creation
+        final_test_data = {
+            "username": f"finaltest_{timestamp}",
+            "email": f"finaltest_{timestamp}@test.com"
+        }
+        
+        final_success, final_response = self.run_test(
+            "4d: Final Registration Test (No Errors)",
+            "POST", 
+            "users",
+            200,
+            data=final_test_data
+        )
+        
+        if not final_success:
+            print("❌ CRITICAL: Registration errors detected!")
+            return False
+        print("✅ No registration errors detected")
+        
+        # FINAL SUMMARY
+        print("\n🎉 USER REGISTRATION TESTING COMPLETED SUCCESSFULLY!")
+        print("=" * 80)
+        print("✅ SCENARIO 1: User creation endpoint fully functional")
+        print("✅ SCENARIO 2: Tournament join flow with new users working")
+        print("✅ SCENARIO 3: Join-by-code flow with new users working")
+        print("✅ SCENARIO 4: Database persistence and integrity verified")
+        print("✅ No registration errors detected")
+        print("=" * 80)
+        print("🔍 CONCLUSION: User registration system is working correctly")
+        print("   - Users are created successfully via POST /api/users")
+        print("   - Tournament joining works for new users")
+        print("   - Join-by-code works for new users")
+        print("   - Users persist correctly in database")
+        print("   - Squad creation happens automatically")
+        print("   - No registration errors found")
+        print("=" * 80)
+        
+        return True
+
+    def run_user_registration_test_only(self):
+        """Run only the user registration scenarios test"""
+        print("🔍 Running User Registration Testing")
+        print(f"Testing against: {self.base_url}")
+        print("=" * 80)
+        
+        success = self.test_user_registration_scenarios()
+        
+        print("\n" + "=" * 80)
+        if success:
+            print("🎉 User Registration Testing PASSED!")
+            print("All user registration scenarios working correctly!")
+            return 0
+        else:
+            print("❌ User Registration Testing FAILED!")
+            print("Critical issues found in user registration process!")
+            return 1
+
 def main():
     import sys
     tester = PIFAAuctionAPITester()
