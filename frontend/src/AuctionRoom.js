@@ -629,7 +629,7 @@ const AuctionRoom = ({ tournamentId, user }) => {
                             {participant.id === user.id && <span className="text-blue-400 ml-1">(You)</span>}
                           </div>
                           <div className="text-xs text-gray-400">
-                            {squad.teams_count}/{tournament.teams_per_user} teams
+                            {squad.teams_count}/{tournament.teams_per_user || 4} teams
                           </div>
                         </div>
                       </div>
