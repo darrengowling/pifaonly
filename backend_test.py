@@ -1217,6 +1217,8 @@ def main():
             return tester.run_squad_bidding_test_only()
         elif sys.argv[1] == "--join-code-test":
             return tester.run_join_code_tests_only()
+        elif sys.argv[1] == "--friends-scenario":
+            return tester.run_comprehensive_friends_scenario_only()
     
     return tester.run_all_tests()
 
