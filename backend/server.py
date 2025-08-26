@@ -352,6 +352,34 @@ async def join_tournament(tournament_id: str, user_id: str):
     
     return {"message": "Joined tournament successfully"}
 
+@api_router.post("/tournaments/join-by-code")
+async def join_tournament_by_code(join_code: str, user_id: str):
+    """Join tournament using a join code"""
+    tournament = await db.tournaments.find_one({"join_code": join_code.upper()})
+    if not tournament:
+        raise HTTPException(status_code=404, detail="Tournament not found with that join code")
+    
+    tournament_obj = Tournament(**tournament)
+    if user_id in tournament_obj.participants:
+        raise HTTPException(status_code=400, detail="Already joined")
+    
+    if len(tournament_obj.participants) >= 8:
+        raise HTTPException(status_code=400, detail="Tournament full")
+    
+    tournament_obj.participants.append(user_id)
+    tournament_obj.prize_pool += tournament_obj.entry_fee
+    
+    await db.tournaments.update_one(
+        {"id": tournament_obj.id},
+        {"$set": tournament_obj.dict()}
+    )
+    
+    # Create squad for user
+    squad = Squad(tournament_id=tournament_obj.id, user_id=user_id)
+    await db.squads.insert_one(squad.dict())
+    
+    return {"message": "Joined tournament successfully", "tournament": tournament_obj}
+
 @api_router.post("/tournaments/{tournament_id}/start-auction")
 async def start_auction(tournament_id: str, admin_id: str):
     tournament = await db.tournaments.find_one({"id": tournament_id})
