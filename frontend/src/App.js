@@ -126,6 +126,8 @@ function App() {
 const Dashboard = () => {
   const { user, tournaments, setTournaments, API } = useAppContext();
   const navigate = useNavigate();
+  const [joinCode, setJoinCode] = useState('');
+  const [showJoinByCode, setShowJoinByCode] = useState(false);
 
   useEffect(() => {
     fetchTournaments();
@@ -137,6 +139,29 @@ const Dashboard = () => {
       setTournaments(response.data);
     } catch (error) {
       console.error('Failed to fetch tournaments:', error);
+    }
+  };
+
+  const joinByCode = async () => {
+    if (!joinCode.trim()) {
+      alert('Please enter a join code');
+      return;
+    }
+
+    try {
+      const response = await axios.post(`${API}/tournaments/join-by-code?join_code=${joinCode.toUpperCase()}&user_id=${user.id}`);
+      alert('Successfully joined tournament!');
+      setJoinCode('');
+      setShowJoinByCode(false);
+      fetchTournaments(); // Refresh tournament list
+      
+      // Navigate to the tournament page
+      if (response.data.tournament) {
+        navigate(`/tournament/${response.data.tournament.id}`);
+      }
+    } catch (error) {
+      const message = error.response?.data?.detail || 'Failed to join tournament';
+      alert(message);
     }
   };
 
