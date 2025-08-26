@@ -18,6 +18,9 @@ const AuctionRoom = ({ tournamentId, user }) => {
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [forceRender, setForceRender] = useState(0); // Force re-render trigger
+  const [selectedTeam, setSelectedTeam] = useState(null); // NEW: For team highlighting
+  const [userSquads, setUserSquads] = useState({}); // NEW: Track user squads for budget display
+  const [teamBidHistory, setTeamBidHistory] = useState([]); // NEW: Bid history for current team
   
   const chatContainerRef = useRef(null);
   const timerRef = useRef(null);
