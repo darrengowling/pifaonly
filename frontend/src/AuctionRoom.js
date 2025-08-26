@@ -662,9 +662,9 @@ const AuctionRoom = ({ tournamentId, user }) => {
                 </div>
               </div>
               
-              <div className={`bg-gray-700 p-6 rounded-lg text-center transition-all duration-300 ${
+              <div className={`bg-gray-700 p-6 rounded-lg text-center transition-all duration-300 cursor-pointer hover:bg-gray-650 ${
                 selectedTeam?.id === currentTeam?.id ? 'ring-2 ring-blue-500 bg-gray-600' : ''
-              }`}>
+              }`} onClick={() => showTeamDetails(currentTeam)}>
                 {/* Enhanced Team Logo */}
                 <div className="flex justify-center mb-4">
                   <TeamLogo team={currentTeam} size="xl" />
@@ -672,8 +672,11 @@ const AuctionRoom = ({ tournamentId, user }) => {
                 
                 <h3 className="text-3xl font-bold mb-2">{currentTeam.name}</h3>
                 <p className="text-gray-400 mb-2">{currentTeam.country}</p>
-                <p className="text-sm text-gray-500 mb-4">
+                <p className="text-sm text-gray-500 mb-2">
                   {currentTeam.competition || 'Champions League'} • Europe
+                </p>
+                <p className="text-xs text-blue-400 mb-4 opacity-75">
+                  Click for team details
                 </p>
                 
                 {/* Current Bid Display */}
