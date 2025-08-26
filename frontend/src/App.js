@@ -884,7 +884,7 @@ const TournamentView = () => {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 mb-6">
+          <div className="grid md:grid-cols-4 gap-6 mb-6">
             <div className="bg-gray-700 p-4 rounded-lg">
               <div className="text-sm text-gray-400">Budget per User</div>
               <div className="text-2xl font-bold">£{(tournament.budget_per_user / 1000000).toFixed(0)}m</div>
@@ -896,6 +896,24 @@ const TournamentView = () => {
             <div className="bg-gray-700 p-4 rounded-lg">
               <div className="text-sm text-gray-400">Minimum Bid</div>
               <div className="text-2xl font-bold">£{(tournament.minimum_bid / 1000000).toFixed(0)}m</div>
+            </div>
+            <div className="bg-gradient-to-r from-green-600 to-blue-600 p-4 rounded-lg">
+              <div className="text-sm text-green-100">Join Code</div>
+              <div className="flex items-center gap-2">
+                <div className="text-2xl font-bold font-mono text-white">{tournament.join_code || 'N/A'}</div>
+                <button
+                  onClick={() => {
+                    if (tournament.join_code) {
+                      navigator.clipboard.writeText(tournament.join_code);
+                      alert('Join code copied!');
+                    }
+                  }}
+                  className="text-white hover:text-green-200 transition-colors"
+                  title="Copy join code"
+                >
+                  📋
+                </button>
+              </div>
             </div>
           </div>
 
