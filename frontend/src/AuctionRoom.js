@@ -340,6 +340,21 @@ const AuctionRoom = ({ tournamentId, user }) => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const formatTimeAgo = (timestamp) => {
+    const now = new Date();
+    const time = new Date(timestamp);
+    const diffInSeconds = Math.floor((now - time) / 1000);
+    
+    if (diffInSeconds < 60) return `${diffInSeconds}s ago`;
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
+    return `${Math.floor(diffInSeconds / 3600)}h ago`;
+  };
+
+  const placeBidWithAmount = (amount) => {
+    setBidAmount(amount.toString());
+    placeBid();
+  };
+
   if (!tournament) {
     return (
       <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
