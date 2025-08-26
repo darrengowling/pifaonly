@@ -203,6 +203,24 @@ const AuctionRoom = ({ tournamentId, user }) => {
         try {
           const bidsResponse = await axios.get(`${API}/tournaments/${tournamentId}/bids`);
           const teamBids = bidsResponse.data.filter(bid => bid.team_id === tournament.current_team_id);
+          
+          // Set bid history for current team
+          const sortedBids = teamBids
+            .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+            .slice(0, 5); // Show last 5 bids
+          
+          const bidHistory = await Promise.all(
+            sortedBids.map(async (bid) => {
+              const bidder = participants.find(p => p.id === bid.user_id);
+              return {
+                ...bid,
+                username: bidder?.username || 'Unknown',
+                timeAgo: formatTimeAgo(bid.timestamp)
+              };
+            })
+          );
+          setTeamBidHistory(bidHistory);
+          
           if (teamBids.length > 0) {
             const highestBid = teamBids.reduce((max, bid) => bid.amount > max.amount ? bid : max);
             const bidder = participants.find(p => p.id === highestBid.user_id);
@@ -212,10 +230,12 @@ const AuctionRoom = ({ tournamentId, user }) => {
             });
           } else {
             setCurrentBid(null);
+            setTeamBidHistory([]);
           }
         } catch (bidError) {
           console.log('No bids yet:', bidError.message);
           setCurrentBid(null);
+          setTeamBidHistory([]);
         }
         
         // Calculate time remaining
