@@ -455,42 +455,111 @@ const AuctionRoom = ({ tournamentId, user }) => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Auction Area */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Current Team */}
+            {/* Current Team with Enhanced UX */}
             <div className="bg-gray-800 p-6 rounded-lg">
-              <h2 className="text-xl font-semibold mb-4">Current Team</h2>
-              <div className="bg-gray-700 p-6 rounded-lg text-center">
-                <h3 className="text-3xl font-bold mb-2">{currentTeam.name}</h3>
-                <p className="text-gray-400 mb-4">{currentTeam.country}</p>
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold">Current Team</h2>
+                <div className="flex items-center gap-2">
+                  <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                    tournament.status === 'auction_active' ? 'bg-green-600 text-white' : 
+                    tournament.status === 'pending' ? 'bg-yellow-600 text-white' : 
+                    'bg-gray-600 text-white'
+                  }`}>
+                    {tournament.status === 'auction_active' ? '🎪 Live Auction' :
+                     tournament.status === 'pending' ? '🕒 Waiting to Start' :
+                     tournament.status === 'tournament_active' ? '⚽ Tournament Active' : 
+                     tournament.status}
+                  </span>
+                </div>
+              </div>
+              
+              <div className={`bg-gray-700 p-6 rounded-lg text-center transition-all duration-300 ${
+                selectedTeam?.id === currentTeam?.id ? 'ring-2 ring-blue-500 bg-gray-600' : ''
+              }`}>
+                {/* Team Logo Placeholder */}
+                <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                  <span className="text-2xl font-bold text-white">
+                    {currentTeam.name.charAt(0)}
+                  </span>
+                </div>
                 
+                <h3 className="text-3xl font-bold mb-2">{currentTeam.name}</h3>
+                <p className="text-gray-400 mb-2">{currentTeam.country}</p>
+                <p className="text-sm text-gray-500 mb-4">Champions League • Europe</p>
+                
+                {/* Current Bid Display */}
                 {currentBid ? (
-                  <div className="mb-4">
-                    <div className="text-2xl font-bold text-green-400">{formatCurrency(currentBid.amount)}</div>
-                    <div className="text-sm text-gray-400">Current highest bid by {currentBid.username}</div>
+                  <div className="mb-6">
+                    <div className="text-3xl font-bold text-green-400 mb-1">{formatCurrency(currentBid.amount)}</div>
+                    <div className="text-sm text-gray-400">Highest bid by <span className="text-blue-400 font-semibold">{currentBid.username}</span></div>
                   </div>
                 ) : (
-                  <div className="mb-4">
-                    <div className="text-xl text-gray-400">No bids yet</div>
+                  <div className="mb-6">
+                    <div className="text-xl text-gray-400 mb-1">No bids yet</div>
+                    <div className="text-sm text-gray-500">Starting bid: {formatCurrency(tournament.minimum_bid)}</div>
                   </div>
                 )}
                 
-                <div className="flex gap-2 items-center justify-center">
-                  <input
-                    type="number"
-                    value={bidAmount}
-                    onChange={(e) => setBidAmount(e.target.value)}
-                    placeholder={`Min: £${(minimumBid / 1000000).toFixed(0)}m`}
-                    className="flex-1 p-3 bg-gray-600 border border-gray-500 rounded-lg text-center"
-                    min={minimumBid / 1000000}
-                  />
-                  <button
-                    onClick={placeBid}
-                    disabled={!bidAmount || timeRemaining === 0}
-                    className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 px-6 py-3 rounded-lg font-semibold transition-colors"
-                  >
-                    Bid £{bidAmount || '0'}m
-                  </button>
+                {/* Bidding Interface */}
+                <div className="space-y-3">
+                  {/* Quick Bid Buttons */}
+                  <div className="flex gap-2 justify-center mb-3">
+                    <button
+                      onClick={() => placeBidWithAmount((minimumBid / 1000000) + 5)}
+                      className="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm transition-colors"
+                    >
+                      +£5m
+                    </button>
+                    <button
+                      onClick={() => placeBidWithAmount((minimumBid / 1000000) + 10)}
+                      className="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm transition-colors"
+                    >
+                      +£10m
+                    </button>
+                    <button
+                      onClick={() => placeBidWithAmount((minimumBid / 1000000) + 20)}
+                      className="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm transition-colors"
+                    >
+                      +£20m
+                    </button>
+                  </div>
+                  
+                  {/* Custom Bid Input */}
+                  <div className="flex gap-2 items-center justify-center">
+                    <input
+                      type="number"
+                      value={bidAmount}
+                      onChange={(e) => setBidAmount(e.target.value)}
+                      placeholder={`Min: £${(minimumBid / 1000000).toFixed(0)}m`}
+                      className="flex-1 p-3 bg-gray-600 border border-gray-500 rounded-lg text-center focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      min={minimumBid / 1000000}
+                    />
+                    <button
+                      onClick={placeBid}
+                      disabled={!bidAmount || timeRemaining === 0}
+                      className="bg-green-600 hover:bg-green-700 disabled:bg-gray-600 px-6 py-3 rounded-lg font-semibold transition-colors"
+                    >
+                      Bid £{bidAmount || '0'}m
+                    </button>
+                  </div>
                 </div>
               </div>
+              
+              {/* Bid History */}
+              {teamBidHistory.length > 0 && (
+                <div className="mt-4">
+                  <h4 className="text-sm font-semibold text-gray-400 mb-2">Recent Bids</h4>
+                  <div className="bg-gray-700 rounded-lg p-3 space-y-2 max-h-32 overflow-y-auto">
+                    {teamBidHistory.map((bid, index) => (
+                      <div key={index} className="flex justify-between items-center text-sm">
+                        <span className="text-blue-400 font-medium">{bid.username}</span>
+                        <span className="text-green-400 font-bold">{formatCurrency(bid.amount)}</span>
+                        <span className="text-gray-500 text-xs">{bid.timeAgo}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Participants Status */}
