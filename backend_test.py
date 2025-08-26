@@ -730,7 +730,9 @@ class PIFAAuctionAPITester:
             self.test_join_tournament,
             self.test_tournament_squads,
             self.test_tournament_bids,
-            self.test_chat_messages
+            self.test_chat_messages,
+            self.test_join_code_functionality,
+            self.test_join_code_uniqueness
         ]
         
         for test in tests:
