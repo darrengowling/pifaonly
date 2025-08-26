@@ -295,6 +295,238 @@ class PIFAAuctionAPITester:
         
         return send_success and get_success
 
+    def test_join_code_functionality(self):
+        """Test comprehensive join code functionality"""
+        print("\n🎯 TESTING JOIN CODE FUNCTIONALITY")
+        print("=" * 60)
+        
+        # Step 1: Create test users
+        timestamp = int(time.time())
+        admin_data = {
+            "username": f"admin_{timestamp}",
+            "email": f"admin_{timestamp}@pifa.com"
+        }
+        
+        admin_success, admin_response = self.run_test(
+            "Step 1a: Create Admin User",
+            "POST", 
+            "users",
+            200,
+            data=admin_data
+        )
+        
+        if not admin_success or 'id' not in admin_response:
+            print("❌ CRITICAL: Cannot create admin user")
+            return False
+            
+        admin_id = admin_response['id']
+        print(f"✅ Created admin: {admin_response['username']} (ID: {admin_id})")
+        
+        joiner_data = {
+            "username": f"joiner_{timestamp}",
+            "email": f"joiner_{timestamp}@pifa.com"
+        }
+        
+        joiner_success, joiner_response = self.run_test(
+            "Step 1b: Create Joiner User",
+            "POST", 
+            "users",
+            200,
+            data=joiner_data
+        )
+        
+        if not joiner_success or 'id' not in joiner_response:
+            print("❌ CRITICAL: Cannot create joiner user")
+            return False
+            
+        joiner_id = joiner_response['id']
+        print(f"✅ Created joiner: {joiner_response['username']} (ID: {joiner_id})")
+        
+        # Step 2: Create tournament and verify join code generation
+        tournament_data = {
+            "name": f"Join Code Test Tournament {timestamp}",
+            "competition_type": "champions_league",
+            "teams_per_user": 4,
+            "minimum_bid": 1000000,
+            "entry_fee": 0
+        }
+        
+        tournament_success, tournament_response = self.run_test(
+            "Step 2: Create Tournament with Join Code",
+            "POST",
+            "tournaments",
+            200,
+            data=tournament_data,
+            params={"admin_id": admin_id}
+        )
+        
+        if not tournament_success or 'id' not in tournament_response:
+            print("❌ CRITICAL: Cannot create tournament")
+            return False
+            
+        tournament_id = tournament_response['id']
+        join_code = tournament_response.get('join_code')
+        
+        if not join_code:
+            print("❌ CRITICAL: Tournament created without join code!")
+            return False
+            
+        print(f"✅ Created tournament: {tournament_response['name']} (ID: {tournament_id})")
+        print(f"✅ Join code generated: {join_code}")
+        
+        # Step 3: Verify join code format (6 characters, uppercase letters and numbers)
+        if len(join_code) != 6:
+            print(f"❌ FAILED: Join code length is {len(join_code)}, expected 6")
+            return False
+        
+        if not join_code.isupper():
+            print(f"❌ FAILED: Join code '{join_code}' is not uppercase")
+            return False
+            
+        if not all(c.isalnum() for c in join_code):
+            print(f"❌ FAILED: Join code '{join_code}' contains non-alphanumeric characters")
+            return False
+            
+        print(f"✅ Join code format validation passed: {join_code}")
+        
+        # Step 4: Test joining by join code
+        join_by_code_success, join_by_code_response = self.run_test(
+            "Step 4: Join Tournament by Code",
+            "POST",
+            "tournaments/join-by-code",
+            200,
+            params={"join_code": join_code, "user_id": joiner_id}
+        )
+        
+        if not join_by_code_success:
+            print("❌ FAILED: Could not join tournament by code")
+            return False
+            
+        print("✅ Successfully joined tournament using join code")
+        
+        # Step 5: Verify user was added to participants
+        tournament_check_success, tournament_check_response = self.run_test(
+            "Step 5: Verify User Added to Participants",
+            "GET",
+            f"tournaments/{tournament_id}",
+            200
+        )
+        
+        if tournament_check_success:
+            participants = tournament_check_response.get('participants', [])
+            if joiner_id not in participants:
+                print(f"❌ FAILED: Joiner {joiner_id} not found in participants: {participants}")
+                return False
+            print(f"✅ User successfully added to participants: {participants}")
+        
+        # Step 6: Verify squad was created for joiner
+        squad_check_success, squad_check_response = self.run_test(
+            "Step 6: Verify Squad Created for Joiner",
+            "GET",
+            f"tournaments/{tournament_id}/squads/{joiner_id}",
+            200
+        )
+        
+        if not squad_check_success:
+            print("❌ FAILED: Squad not created for joiner")
+            return False
+            
+        print("✅ Squad successfully created for joiner")
+        
+        # Step 7: Test invalid join code
+        invalid_join_success, invalid_join_response = self.run_test(
+            "Step 7: Test Invalid Join Code",
+            "POST",
+            "tournaments/join-by-code",
+            404,  # Expecting 404 for invalid code
+            params={"join_code": "INVALID", "user_id": joiner_id}
+        )
+        
+        if not invalid_join_success:
+            print("❌ FAILED: Invalid join code should return 404")
+            return False
+            
+        print("✅ Invalid join code correctly rejected with 404")
+        
+        # Step 8: Test duplicate join attempt
+        duplicate_join_success, duplicate_join_response = self.run_test(
+            "Step 8: Test Duplicate Join Attempt",
+            "POST",
+            "tournaments/join-by-code",
+            400,  # Expecting 400 for already joined
+            params={"join_code": join_code, "user_id": joiner_id}
+        )
+        
+        if not duplicate_join_success:
+            print("❌ FAILED: Duplicate join should return 400")
+            return False
+            
+        print("✅ Duplicate join attempt correctly rejected with 400")
+        
+        return True
+
+    def test_join_code_uniqueness(self):
+        """Test that multiple tournaments get unique join codes"""
+        print("\n🎯 TESTING JOIN CODE UNIQUENESS")
+        print("=" * 60)
+        
+        # Create a test user
+        timestamp = int(time.time())
+        user_data = {
+            "username": f"uniqueness_test_{timestamp}",
+            "email": f"uniqueness_test_{timestamp}@pifa.com"
+        }
+        
+        user_success, user_response = self.run_test(
+            "Create User for Uniqueness Test",
+            "POST", 
+            "users",
+            200,
+            data=user_data
+        )
+        
+        if not user_success or 'id' not in user_response:
+            print("❌ CRITICAL: Cannot create user for uniqueness test")
+            return False
+            
+        user_id = user_response['id']
+        join_codes = []
+        
+        # Create 5 tournaments and collect their join codes
+        for i in range(5):
+            tournament_data = {
+                "name": f"Uniqueness Test Tournament {i+1} {timestamp}",
+                "competition_type": "champions_league",
+                "teams_per_user": 4,
+                "minimum_bid": 1000000,
+                "entry_fee": 0
+            }
+            
+            tournament_success, tournament_response = self.run_test(
+                f"Create Tournament {i+1} for Uniqueness Test",
+                "POST",
+                "tournaments",
+                200,
+                data=tournament_data,
+                params={"admin_id": user_id}
+            )
+            
+            if not tournament_success or 'join_code' not in tournament_response:
+                print(f"❌ FAILED: Could not create tournament {i+1} or get join code")
+                return False
+                
+            join_code = tournament_response['join_code']
+            join_codes.append(join_code)
+            print(f"✅ Tournament {i+1} created with join code: {join_code}")
+        
+        # Check for uniqueness
+        if len(set(join_codes)) != len(join_codes):
+            print(f"❌ FAILED: Duplicate join codes found: {join_codes}")
+            return False
+            
+        print(f"✅ All join codes are unique: {join_codes}")
+        return True
+
     def test_squad_creation_and_bidding_flow(self):
         """Test the complete squad creation and bidding flow to identify 'Squad not found' issue"""
         print("\n🎯 TESTING SQUAD CREATION AND BIDDING FLOW")
