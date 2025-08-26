@@ -559,13 +559,27 @@ const TournamentCard = ({ tournament }) => {
                   tournament.status !== 'completed';
 
   const participantPercentage = (tournament.participants.length / 8) * 100;
+  const isUserParticipant = tournament.participants.includes(user.id);
+  const isUserAdmin = tournament.admin_id === user.id;
 
   return (
     <div className="bg-gray-700 p-6 rounded-lg hover:bg-gray-650 transition-colors">
-      {/* Header with Status Badge */}
+      {/* Header with Status Badge and User Indicators */}
       <div className="flex justify-between items-start mb-4">
         <div className="flex-1">
-          <h3 className="font-bold text-lg mb-1">{tournament.name}</h3>
+          <div className="flex items-center gap-2 mb-1">
+            <h3 className="font-bold text-lg">{tournament.name}</h3>
+            {isUserAdmin && (
+              <span className="px-2 py-1 bg-yellow-600 text-yellow-100 rounded-full text-xs font-semibold">
+                👑 ADMIN
+              </span>
+            )}
+            {isUserParticipant && !isUserAdmin && (
+              <span className="px-2 py-1 bg-green-600 text-green-100 rounded-full text-xs font-semibold">
+                ✅ JOINED
+              </span>
+            )}
+          </div>
           <div className="flex items-center gap-2 mb-2">
             <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getStatusBadge(tournament.status)}`}>
               {getStatusIcon(tournament.status)} {getStatusText(tournament.status)}
