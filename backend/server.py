@@ -295,11 +295,15 @@ async def create_tournament(tournament: TournamentCreate, admin_id: str):
     teams = await db.teams.find({"competition": tournament.competition_type}).to_list(1000)
     team_ids = [team["id"] for team in teams]
     
+    # Generate unique join code
+    join_code = await ensure_unique_join_code(db)
+    
     tournament_obj = Tournament(
         **tournament.dict(),
         admin_id=admin_id,
         participants=[admin_id],
-        teams=team_ids
+        teams=team_ids,
+        join_code=join_code
     )
     await db.tournaments.insert_one(tournament_obj.dict())
     
