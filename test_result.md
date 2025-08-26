@@ -334,6 +334,18 @@ metadata:
           agent: "testing"
           comment: "COMPREHENSIVE END-TO-END TESTING COMPLETED: Successfully executed complete Friends of PIFA tournament scenario with 5 realistic users (Alex, Sarah, Mike, Emma, Tom). TESTED ALL PHASES: 1) User creation and tournament setup - all 5 users created, Alex created 'Friends Championship 2025' with join code D1MGZ4, all users joined via both direct URL and join code methods, all squads verified. 2) New features testing - join code system working perfectly, tournament filtering functional, multi-tournament capability tested (Sarah created second tournament 'Friends Cup 2025'). 3) Auction preparation - auction started successfully, tournament status correctly set to 'auction_active', current team properly set for bidding. 4) Full auction simulation - 4 successful bids placed (Sarah £2M, Mike £3M, Tom £4M, Alex £5M), Emma's lower bid correctly rejected, budget management functional, chat system operational with 3 messages, database consistency maintained with 5 squads and 4 bids. ALL BACKEND FUNCTIONALITY WORKING PERFECTLY for real-world tournament scenarios."
 
+  - task: "Database Cleanup for Fresh Start"
+    implemented: true
+    working: true
+    file: "/app/backend_test.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "DATABASE CLEANUP SUCCESSFULLY COMPLETED: Performed comprehensive database cleanup as requested by user to provide fresh start for testing with real friends. REMOVED: 21 tournaments (including 'Friends Championship 2025', 'Friends Cup 2025', and all test tournaments), 44 test users (including Alex, Sarah, Mike, Emma, Tom, and all dummy users), 32 squads, 4 bids, 4 chat messages. PRESERVED: All 64 teams (32 Champions League + 32 Europa League teams) for new tournament creation. VERIFIED: GET /api/tournaments returns empty list (0 tournaments), GET /api/teams returns 64 teams (32 CL + 32 EL), database is completely clean and ready for fresh testing with real friends without any confusing test data."
+
 test_plan:
   current_focus: []
   stuck_tasks: []
