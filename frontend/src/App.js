@@ -148,48 +148,131 @@ const Dashboard = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Welcome Banner */}
+      {/* Enhanced Welcome Banner */}
       <div className="bg-gradient-to-r from-blue-900 to-purple-900 border border-blue-600 p-6 rounded-lg mb-8">
         <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-bold text-white mb-2">🎮 Welcome to Friends of PIFA Testing!</h2>
+          <div className="flex-1">
+            <h2 className="text-xl font-bold text-white mb-2">🎮 Welcome to Friends of PIFA!</h2>
             <p className="text-blue-200 text-sm">
-              New here? Check out the <strong>User Testing Guide</strong> (help button ?) for step-by-step instructions on how to create tournaments, join auctions, and test all features.
+              Ready to build your squad? Create tournaments, bid on teams, and compete with friends in live auctions.
             </p>
           </div>
-          <button
-            onClick={showGuide}
-            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-semibold transition-colors whitespace-nowrap"
-          >
-            View Guide
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={showGuide}
+              className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-semibold transition-colors whitespace-nowrap"
+            >
+              📖 User Guide
+            </button>
+          </div>
         </div>
       </div>
 
-      <header className="mb-8">
-        <h1 className="text-4xl font-bold text-center mb-2">Friends of PIFA</h1>
-        <p className="text-center text-gray-400">Build your squad, compete with friends</p>
+      {/* Enhanced Header */}
+      <header className="mb-8 text-center">
+        <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
+          Friends of PIFA
+        </h1>
+        <p className="text-gray-400 text-lg">Build your squad, compete with friends in live auctions</p>
+        
+        {/* Quick Stats */}
+        <div className="flex justify-center gap-6 mt-6">
+          <div className="text-center">
+            <div className="text-2xl font-bold text-blue-400">{tournaments.length}</div>
+            <div className="text-sm text-gray-400">Active Tournaments</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-green-400">64</div>
+            <div className="text-sm text-gray-400">Teams Available</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-purple-400">£500m</div>
+            <div className="text-sm text-gray-400">Budget per Player</div>
+          </div>
+        </div>
       </header>
 
+      {/* Enhanced Game Instructions */}
+      {tournaments.length === 0 && (
+        <div className="bg-gray-800 p-6 rounded-lg mb-8">
+          <h2 className="text-xl font-semibold mb-4 text-center">🚀 How to Get Started</h2>
+          <div className="grid md:grid-cols-3 gap-4">
+            <div className="text-center p-4 bg-gray-700 rounded-lg">
+              <div className="text-3xl mb-2">1️⃣</div>
+              <h3 className="font-semibold mb-2">Create Tournament</h3>
+              <p className="text-sm text-gray-400">Start a new auction with your friends</p>
+            </div>
+            <div className="text-center p-4 bg-gray-700 rounded-lg">
+              <div className="text-3xl mb-2">2️⃣</div>
+              <h3 className="font-semibold mb-2">Invite Friends</h3>
+              <p className="text-sm text-gray-400">Share the tournament link to invite players</p>
+            </div>
+            <div className="text-center p-4 bg-gray-700 rounded-lg">
+              <div className="text-3xl mb-2">3️⃣</div>
+              <h3 className="font-semibold mb-2">Live Auction</h3>
+              <p className="text-sm text-gray-400">Bid on teams and build your squad</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Enhanced Action Sections */}
       <div className="grid md:grid-cols-2 gap-8">
-        <div className="bg-gray-800 p-6 rounded-lg">
-          <h2 className="text-2xl font-semibold mb-4">Create New Tournament</h2>
-          <p className="text-gray-400 mb-4">
-            Start a new football auction with your friends. Choose from Champions League or Europa League teams.
+        {/* Create Tournament Card */}
+        <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 hover:border-blue-500 transition-colors">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
+              <span className="text-xl">🏆</span>
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold">Create New Tournament</h2>
+              <p className="text-sm text-gray-400">Be the host</p>
+            </div>
+          </div>
+          <p className="text-gray-400 mb-6">
+            Start a new football auction with your friends. Choose from <strong>32 Champions League</strong> and <strong>32 Europa League</strong> teams.
           </p>
+          <div className="space-y-3">
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-400">Budget per Player:</span>
+              <span className="text-green-400 font-semibold">£500m</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-400">Teams per Player:</span>
+              <span className="text-blue-400 font-semibold">4 teams</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-400">Max Players:</span>
+              <span className="text-purple-400 font-semibold">8 players</span>
+            </div>
+          </div>
           <button 
             onClick={() => navigate('/create')}
-            className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold transition-colors"
+            className="w-full mt-6 bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold transition-colors"
           >
-            Create Tournament
+            🚀 Create Tournament
           </button>
         </div>
 
-        <div className="bg-gray-800 p-6 rounded-lg">
-          <h2 className="text-2xl font-semibold mb-4">Active Tournaments</h2>
-          <div className="space-y-3">
+        {/* Active Tournaments Card */}
+        <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center">
+              <span className="text-xl">🎪</span>
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold">Active Tournaments</h2>
+              <p className="text-sm text-gray-400">{tournaments.length} tournament{tournaments.length !== 1 ? 's' : ''} found</p>
+            </div>
+          </div>
+          
+          <div className="space-y-3 max-h-96 overflow-y-auto">
             {tournaments.length === 0 ? (
-              <p className="text-gray-400">No tournaments yet. Create your first one!</p>
+              <div className="text-center py-8">
+                <div className="text-4xl mb-3">🏁</div>
+                <p className="text-gray-400 mb-4">No tournaments yet.</p>
+                <p className="text-sm text-gray-500">Create your first tournament to get started!</p>
+              </div>
             ) : (
               tournaments.map(tournament => (
                 <TournamentCard key={tournament.id} tournament={tournament} />
