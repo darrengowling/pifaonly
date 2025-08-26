@@ -18,6 +18,18 @@ import string
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
+def generate_join_code():
+    """Generate a unique 6-character join code"""
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+
+async def ensure_unique_join_code(db):
+    """Ensure the generated join code is unique"""
+    while True:
+        code = generate_join_code()
+        existing = await db.tournaments.find_one({"join_code": code})
+        if not existing:
+            return code
+
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
