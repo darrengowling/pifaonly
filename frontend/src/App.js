@@ -122,15 +122,18 @@ function App() {
   );
 }
 
-// Dashboard Component
+// Enhanced Dashboard Component with Multi-Tournament Support
 const Dashboard = () => {
   const { user, tournaments, setTournaments, API } = useAppContext();
   const navigate = useNavigate();
   const [joinCode, setJoinCode] = useState('');
   const [showJoinByCode, setShowJoinByCode] = useState(false);
+  const [tournamentFilter, setTournamentFilter] = useState('all'); // all, active, pending, completed, my
+  const [userStats, setUserStats] = useState(null);
 
   useEffect(() => {
     fetchTournaments();
+    fetchUserStats();
   }, []);
 
   const fetchTournaments = async () => {
@@ -139,6 +142,23 @@ const Dashboard = () => {
       setTournaments(response.data);
     } catch (error) {
       console.error('Failed to fetch tournaments:', error);
+    }
+  };
+
+  const fetchUserStats = async () => {
+    try {
+      // Calculate user statistics across all tournaments
+      const userTournaments = tournaments.filter(t => t.participants.includes(user.id));
+      const stats = {
+        tournaments_joined: userTournaments.length,
+        tournaments_created: tournaments.filter(t => t.admin_id === user.id).length,
+        active_auctions: userTournaments.filter(t => t.status === 'auction_active').length,
+        completed_tournaments: userTournaments.filter(t => t.status === 'completed').length,
+        total_budget_allocated: userTournaments.length * 500 // Assuming £500m per tournament
+      };
+      setUserStats(stats);
+    } catch (error) {
+      console.error('Failed to calculate user stats:', error);
     }
   };
 
@@ -163,6 +183,41 @@ const Dashboard = () => {
       const message = error.response?.data?.detail || 'Failed to join tournament';
       alert(message);
     }
+  };
+
+  const getFilteredTournaments = () => {
+    let filtered = tournaments;
+    
+    switch (tournamentFilter) {
+      case 'my':
+        filtered = tournaments.filter(t => t.participants.includes(user.id));
+        break;
+      case 'active':
+        filtered = tournaments.filter(t => t.status === 'auction_active');
+        break;
+      case 'pending':
+        filtered = tournaments.filter(t => t.status === 'pending');
+        break;
+      case 'completed':
+        filtered = tournaments.filter(t => t.status === 'completed');
+        break;
+      case 'created':
+        filtered = tournaments.filter(t => t.admin_id === user.id);
+        break;
+      default:
+        filtered = tournaments;
+    }
+    
+    return filtered.sort((a, b) => {
+      // Sort by status priority: auction_active > pending > tournament_active > completed
+      const statusPriority = {
+        'auction_active': 4,
+        'pending': 3,
+        'tournament_active': 2,
+        'completed': 1
+      };
+      return (statusPriority[b.status] || 0) - (statusPriority[a.status] || 0);
+    });
   };
 
   const showGuide = () => {
