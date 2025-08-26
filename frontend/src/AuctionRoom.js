@@ -4,6 +4,51 @@ import axios from 'axios';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
+// Team Logo Component - generates attractive placeholders
+const TeamLogo = ({ team, size = 'lg' }) => {
+  const sizeClasses = {
+    sm: 'w-8 h-8 text-sm',
+    md: 'w-12 h-12 text-lg', 
+    lg: 'w-20 h-20 text-2xl',
+    xl: 'w-24 h-24 text-3xl'
+  };
+
+  const getTeamColor = (teamName) => {
+    // Generate consistent colors based on team name
+    const colors = [
+      'from-red-500 to-red-700',
+      'from-blue-500 to-blue-700', 
+      'from-green-500 to-green-700',
+      'from-purple-500 to-purple-700',
+      'from-yellow-500 to-orange-600',
+      'from-indigo-500 to-indigo-700',
+      'from-pink-500 to-pink-700',
+      'from-teal-500 to-teal-700'
+    ];
+    
+    let hash = 0;
+    for (let i = 0; i < teamName.length; i++) {
+      hash = teamName.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return colors[Math.abs(hash) % colors.length];
+  };
+
+  const getTeamInitials = (teamName) => {
+    return teamName
+      .split(' ')
+      .map(word => word.charAt(0))
+      .join('')
+      .substring(0, 2)
+      .toUpperCase();
+  };
+
+  return (
+    <div className={`${sizeClasses[size]} bg-gradient-to-br ${getTeamColor(team.name)} rounded-full flex items-center justify-center font-bold text-white shadow-lg`}>
+      {getTeamInitials(team.name)}
+    </div>
+  );
+};
+
 const AuctionRoom = ({ tournamentId, user }) => {
   const [tournament, setTournament] = useState(null);
   const [currentTeam, setCurrentTeam] = useState(null);
