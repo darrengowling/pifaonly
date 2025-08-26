@@ -921,6 +921,14 @@ const AuctionRoom = ({ tournamentId, user }) => {
             </div>
           </div>
         </div>
+
+        {/* Team Detail Panel */}
+        <TeamDetailPanel
+          team={detailTeam}
+          isVisible={showTeamDetail}
+          onClose={() => setShowTeamDetail(false)}
+          currentBid={currentBid}
+        />
       </div>
     </div>
   );
