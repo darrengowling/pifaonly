@@ -202,18 +202,33 @@ const Dashboard = () => {
   );
 };
 
-// Tournament Card Component
+// Enhanced Tournament Card Component with champs1-inspired UX
 const TournamentCard = ({ tournament }) => {
   const { user, API } = useAppContext();
   const navigate = useNavigate();
 
-  const getStatusColor = (status) => {
+  const getStatusBadge = (status) => {
     switch (status) {
-      case 'pending': return 'text-yellow-400';
-      case 'auction_active': return 'text-green-400';
-      case 'tournament_active': return 'text-blue-400';
-      case 'completed': return 'text-gray-400';
-      default: return 'text-gray-400';
+      case 'pending': 
+        return 'bg-yellow-600 text-white';
+      case 'auction_active': 
+        return 'bg-green-600 text-white animate-pulse';
+      case 'tournament_active': 
+        return 'bg-blue-600 text-white';
+      case 'completed': 
+        return 'bg-gray-600 text-white';
+      default: 
+        return 'bg-gray-600 text-white';
+    }
+  };
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case 'pending': return '🕒';
+      case 'auction_active': return '🎪';
+      case 'tournament_active': return '⚽';
+      case 'completed': return '✅';
+      default: return '📋';
     }
   };
 
@@ -240,35 +255,71 @@ const TournamentCard = ({ tournament }) => {
                   tournament.participants.length < 8 && 
                   tournament.status !== 'completed';
 
+  const participantPercentage = (tournament.participants.length / 8) * 100;
+
   return (
-    <div className="bg-gray-700 p-4 rounded-lg">
-      <div className="flex justify-between items-start mb-2">
-        <h3 className="font-semibold">{tournament.name}</h3>
-        <span className={`text-sm ${getStatusColor(tournament.status)}`}>
-          {getStatusText(tournament.status)}
-        </span>
+    <div className="bg-gray-700 p-6 rounded-lg hover:bg-gray-650 transition-colors">
+      {/* Header with Status Badge */}
+      <div className="flex justify-between items-start mb-4">
+        <div className="flex-1">
+          <h3 className="font-bold text-lg mb-1">{tournament.name}</h3>
+          <div className="flex items-center gap-2 mb-2">
+            <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getStatusBadge(tournament.status)}`}>
+              {getStatusIcon(tournament.status)} {getStatusText(tournament.status)}
+            </span>
+          </div>
+        </div>
       </div>
-      <p className="text-sm text-gray-400 mb-2">
-        {tournament.competition_type.replace('_', ' ').toUpperCase()}
-      </p>
-      <p className="text-sm text-gray-400 mb-3">
-        Players: {tournament.participants.length}/8
-      </p>
+
+      {/* Tournament Info */}
+      <div className="space-y-2 mb-4">
+        <div className="flex justify-between text-sm">
+          <span className="text-gray-400">Competition:</span>
+          <span className="font-medium">{tournament.competition_type.replace('_', ' ').toUpperCase()}</span>
+        </div>
+        
+        <div className="flex justify-between text-sm">
+          <span className="text-gray-400">Budget per Player:</span>
+          <span className="font-medium text-green-400">£{(tournament.budget_per_user / 1000000)}m</span>
+        </div>
+        
+        <div className="flex justify-between text-sm">
+          <span className="text-gray-400">Teams per Player:</span>
+          <span className="font-medium">{tournament.teams_per_user || 4}</span>
+        </div>
+      </div>
+
+      {/* Participants Progress */}
+      <div className="mb-4">
+        <div className="flex justify-between text-sm text-gray-400 mb-1">
+          <span>Participants</span>
+          <span>{tournament.participants.length}/8</span>
+        </div>
+        <div className="w-full bg-gray-600 rounded-full h-2">
+          <div 
+            className={`h-2 rounded-full transition-all duration-300 ${
+              participantPercentage >= 25 ? 'bg-green-500' : 'bg-yellow-500'
+            }`}
+            style={{ width: `${Math.max(participantPercentage, 10)}%` }}
+          ></div>
+        </div>
+      </div>
       
+      {/* Action Buttons */}
       <div className="flex gap-2">
         {canJoin && (
           <button 
             onClick={joinTournament}
-            className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-sm transition-colors"
+            className="flex-1 bg-green-600 hover:bg-green-700 px-4 py-2 rounded font-semibold transition-colors"
           >
-            Join
+            🎯 Join Tournament
           </button>
         )}
         <button 
           onClick={() => navigate(`/tournament/${tournament.id}`)}
-          className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-sm transition-colors"
+          className={`${canJoin ? 'flex-1' : 'w-full'} bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded font-semibold transition-colors`}
         >
-          View
+          {tournament.status === 'auction_active' ? '🎪 Join Auction' : '👁️ View Details'}
         </button>
       </div>
     </div>
