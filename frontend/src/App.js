@@ -1402,4 +1402,155 @@ const AuctionRoomWrapper = () => {
   return <AuctionRoom tournamentId={tournamentId} user={user} />;
 };
 
+// Advanced Analytics Component
+const TournamentAnalytics = ({ tournaments, user }) => {
+  const userTournaments = tournaments.filter(t => t.participants.includes(user.id));
+  const allUsers = [...new Set(tournaments.flatMap(t => t.participants))];
+  
+  // Calculate global leaderboard data
+  const leaderboardData = allUsers.map(userId => {
+    const userTournamentsCount = tournaments.filter(t => t.participants.includes(userId)).length;
+    const createdCount = tournaments.filter(t => t.admin_id === userId).length;
+    const activeCount = tournaments.filter(t => t.participants.includes(userId) && t.status === 'auction_active').length;
+    
+    // Create a username for display (in real app, this would come from user data)
+    const isCurrentUser = userId === user.id;
+    const username = isCurrentUser ? user.username : `User ${userId.substring(0, 8)}`;
+    
+    return {
+      userId,
+      username,
+      tournamentsJoined: userTournamentsCount,
+      tournamentsCreated: createdCount,
+      activeAuctions: activeCount,
+      score: userTournamentsCount * 10 + createdCount * 25 + activeCount * 5,
+      isCurrentUser
+    };
+  }).sort((a, b) => b.score - a.score);
+
+  const userRank = leaderboardData.findIndex(u => u.isCurrentUser) + 1;
+
+  // Tournament trends
+  const tournamentsByStatus = {
+    pending: tournaments.filter(t => t.status === 'pending').length,
+    active: tournaments.filter(t => t.status === 'auction_active').length,
+    tournament: tournaments.filter(t => t.status === 'tournament_active').length,
+    completed: tournaments.filter(t => t.status === 'completed').length
+  };
+
+  return (
+    <div className="grid md:grid-cols-2 gap-8">
+      {/* Global Leaderboard */}
+      <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
+            <span className="text-xl">🏅</span>
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold">Global Leaderboard</h2>
+            <p className="text-sm text-gray-400">
+              You're ranked #{userRank} of {leaderboardData.length} players
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-3 max-h-64 overflow-y-auto">
+          {leaderboardData.slice(0, 10).map((player, index) => (
+            <div 
+              key={player.userId} 
+              className={`flex items-center gap-3 p-3 rounded-lg ${
+                player.isCurrentUser ? 'bg-blue-600 bg-opacity-20 border border-blue-500' : 'bg-gray-700'
+              }`}
+            >
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
+                index === 0 ? 'bg-yellow-500 text-yellow-900' :
+                index === 1 ? 'bg-gray-400 text-gray-900' :
+                index === 2 ? 'bg-orange-600 text-orange-100' :
+                'bg-gray-600 text-white'
+              }`}>
+                {index < 3 ? ['🥇', '🥈', '🥉'][index] : index + 1}
+              </div>
+              
+              <div className="flex-1">
+                <div className="font-medium text-sm">
+                  {player.username}
+                  {player.isCurrentUser && <span className="text-blue-400 ml-1">(You)</span>}
+                </div>
+                <div className="text-xs text-gray-400">
+                  {player.tournamentsJoined} joined • {player.tournamentsCreated} created
+                </div>
+              </div>
+              
+              <div className="text-right">
+                <div className="font-bold text-sm text-purple-400">{player.score}</div>
+                <div className="text-xs text-gray-400">points</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {userRank > 10 && (
+          <div className="mt-4 pt-3 border-t border-gray-600">
+            <div className="text-sm text-gray-400 text-center">
+              ... {userRank - 10} more players above you
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Analytics Dashboard */}
+      <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-teal-600 rounded-full flex items-center justify-center">
+            <span className="text-xl">📊</span>
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold">Platform Analytics</h2>
+            <p className="text-sm text-gray-400">Real-time tournament statistics</p>
+          </div>
+        </div>
+
+        {/* Tournament Status Distribution */}
+        <div className="mb-6">
+          <h3 className="text-sm font-semibold text-gray-400 mb-3">Tournament Status</h3>
+          <div className="space-y-3">
+            {[
+              { key: 'active', label: 'Live Auctions', count: tournamentsByStatus.active, color: 'from-green-500 to-emerald-500', icon: '🎪' },
+              { key: 'pending', label: 'Waiting to Start', count: tournamentsByStatus.pending, color: 'from-yellow-500 to-orange-500', icon: '⏳' },
+              { key: 'tournament', label: 'In Tournament', count: tournamentsByStatus.tournament, color: 'from-blue-500 to-cyan-500', icon: '⚽' },
+              { key: 'completed', label: 'Completed', count: tournamentsByStatus.completed, color: 'from-gray-500 to-slate-500', icon: '✅' }
+            ].map(status => (
+              <div key={status.key} className="flex items-center gap-3">
+                <div className={`w-8 h-8 bg-gradient-to-r ${status.color} rounded-full flex items-center justify-center text-sm`}>
+                  {status.icon}
+                </div>
+                <div className="flex-1">
+                  <div className="text-sm font-medium">{status.label}</div>
+                  <div className="text-xs text-gray-400">{status.count} tournaments</div>
+                </div>
+                <div className="text-lg font-bold text-white">{status.count}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Your Performance */}
+        <div>
+          <h3 className="text-sm font-semibold text-gray-400 mb-3">Your Performance</h3>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-gray-700 p-3 rounded text-center">
+              <div className="text-2xl font-bold text-blue-400">{userTournaments.length}</div>
+              <div className="text-xs text-gray-400">Tournaments</div>
+            </div>
+            <div className="bg-gray-700 p-3 rounded text-center">
+              <div className="text-2xl font-bold text-green-400">#{userRank}</div>
+              <div className="text-xs text-gray-400">Global Rank</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default App;
