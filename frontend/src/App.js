@@ -310,22 +310,69 @@ const Dashboard = () => {
         </h1>
         <p className="text-gray-400 text-lg">Build your squad, compete with friends in live auctions</p>
         
-        {/* Quick Stats */}
+        {/* Enhanced User Statistics */}
         <div className="flex justify-center gap-6 mt-6">
           <div className="text-center">
             <div className="text-2xl font-bold text-blue-400">{tournaments.length}</div>
-            <div className="text-sm text-gray-400">Active Tournaments</div>
+            <div className="text-sm text-gray-400">Total Tournaments</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-green-400">64</div>
-            <div className="text-sm text-gray-400">Teams Available</div>
+            <div className="text-2xl font-bold text-green-400">
+              {userStats ? userStats.tournaments_joined : 0}
+            </div>
+            <div className="text-sm text-gray-400">Joined</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-purple-400">£500m</div>
-            <div className="text-sm text-gray-400">Budget per Player</div>
+            <div className="text-2xl font-bold text-purple-400">
+              {userStats ? userStats.tournaments_created : 0}
+            </div>
+            <div className="text-sm text-gray-400">Created</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-yellow-400">
+              {userStats ? userStats.active_auctions : 0}
+            </div>
+            <div className="text-sm text-gray-400">Live Auctions</div>
           </div>
         </div>
       </header>
+
+      {/* Tournament Filters */}
+      {tournaments.length > 0 && (
+        <div className="mb-8">
+          <div className="bg-gray-800 p-4 rounded-lg">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-gray-400 text-sm">Filter:</span>
+                <div className="flex gap-2">
+                  {[
+                    { key: 'all', label: '🌐 All', count: tournaments.length },
+                    { key: 'my', label: '👤 My Tournaments', count: tournaments.filter(t => t.participants.includes(user.id)).length },
+                    { key: 'active', label: '🎪 Live Auctions', count: tournaments.filter(t => t.status === 'auction_active').length },
+                    { key: 'pending', label: '⏳ Waiting', count: tournaments.filter(t => t.status === 'pending').length },
+                    { key: 'created', label: '🏆 Created by Me', count: tournaments.filter(t => t.admin_id === user.id).length }
+                  ].map(filter => (
+                    <button
+                      key={filter.key}
+                      onClick={() => setTournamentFilter(filter.key)}
+                      className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
+                        tournamentFilter === filter.key
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                      }`}
+                    >
+                      {filter.label} ({filter.count})
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="text-sm text-gray-400">
+                Showing {getFilteredTournaments().length} tournament{getFilteredTournaments().length !== 1 ? 's' : ''}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Enhanced Game Instructions */}
       {tournaments.length === 0 && (
