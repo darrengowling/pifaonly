@@ -1440,6 +1440,8 @@ def main():
             return tester.run_join_code_tests_only()
         elif sys.argv[1] == "--friends-scenario":
             return tester.run_comprehensive_friends_scenario_only()
+        elif sys.argv[1] == "--cleanup":
+            return tester.run_database_cleanup_only()
     
     return tester.run_all_tests()
 
