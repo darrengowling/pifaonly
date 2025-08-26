@@ -250,12 +250,23 @@ const AuctionRoom = ({ tournamentId, user }) => {
 
   const fetchSquads = async () => {
     try {
-      // For now, use placeholder data - this would be implemented later
-      console.log('Squad management will be implemented later');
-      setSquads([]);
+      const response = await axios.get(`${API}/tournaments/${tournamentId}/squads`);
+      setSquads(response.data);
+      
+      // Create user squad mapping for budget tracking
+      const squadMap = {};
+      response.data.forEach(squad => {
+        squadMap[squad.user_id] = {
+          total_spent: squad.total_spent || 0,
+          teams_count: squad.teams ? squad.teams.length : 0,
+          remaining_budget: tournament.budget_per_user - (squad.total_spent || 0)
+        };
+      });
+      setUserSquads(squadMap);
     } catch (error) {
       console.error('Failed to fetch squads:', error);
       setSquads([]);
+      setUserSquads({});
     }
   };
 
