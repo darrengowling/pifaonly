@@ -362,6 +362,27 @@ const TournamentCard = ({ tournament }) => {
         </div>
         
         <div className="flex justify-between text-sm">
+          <span className="text-gray-400">Join Code:</span>
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-blue-400 bg-blue-900 px-2 py-1 rounded text-xs font-mono">
+              {tournament.join_code || 'N/A'}
+            </span>
+            {tournament.join_code && (
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(tournament.join_code);
+                  alert('Join code copied to clipboard!');
+                }}
+                className="text-xs text-gray-400 hover:text-white transition-colors"
+                title="Copy join code"
+              >
+                📋
+              </button>
+            )}
+          </div>
+        </div>
+        
+        <div className="flex justify-between text-sm">
           <span className="text-gray-400">Budget per Player:</span>
           <span className="font-medium text-green-400">£{(tournament.budget_per_user / 1000000)}m</span>
         </div>
