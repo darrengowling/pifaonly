@@ -346,6 +346,18 @@ metadata:
           agent: "testing"
           comment: "DATABASE CLEANUP SUCCESSFULLY COMPLETED: Performed comprehensive database cleanup as requested by user to provide fresh start for testing with real friends. REMOVED: 21 tournaments (including 'Friends Championship 2025', 'Friends Cup 2025', and all test tournaments), 44 test users (including Alex, Sarah, Mike, Emma, Tom, and all dummy users), 32 squads, 4 bids, 4 chat messages. PRESERVED: All 64 teams (32 Champions League + 32 Europa League teams) for new tournament creation. VERIFIED: GET /api/tournaments returns empty list (0 tournaments), GET /api/teams returns 64 teams (32 CL + 32 EL), database is completely clean and ready for fresh testing with real friends without any confusing test data."
 
+  - task: "User Registration Issue Investigation"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "COMPREHENSIVE USER REGISTRATION TESTING COMPLETED: Investigated reported critical issue where 'new users aren't being registered when they join tournaments'. TESTED ALL SCENARIOS: 1) User creation endpoint (POST /api/users) - WORKING PERFECTLY with proper user creation and retrieval, 2) Tournament join flow with new users - WORKING PERFECTLY with automatic squad creation and participant addition, 3) Join-by-code flow with new users - WORKING PERFECTLY with proper user registration and tournament joining, 4) Database persistence verification - ALL USERS PERSISTING CORRECTLY with proper data integrity. RESULTS: All 29/29 backend API tests passed + comprehensive user registration test suite (20+ additional tests) passed. CONCLUSION: NO USER REGISTRATION ISSUES FOUND - all functionality working correctly. Users are created successfully via POST /api/users, tournament joining works for new users, join-by-code works for new users, users persist correctly in database, squad creation happens automatically during joins, no registration errors detected. The reported issue may be frontend-related, user-specific, or resolved by previous fixes rather than a backend registration problem."
+
 test_plan:
   current_focus: []
   stuck_tasks: []
