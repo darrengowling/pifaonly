@@ -111,6 +111,7 @@ class Tournament(BaseModel):
     bid_end_time: Optional[datetime] = None
     participants: List[str] = []
     teams: List[str] = []
+    join_code: str = Field(default="")  # 6-character join code
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 class TournamentCreate(BaseModel):
