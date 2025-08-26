@@ -651,23 +651,81 @@ const AuctionRoom = ({ tournamentId, user }) => {
               </div>
             </div>
 
-            {/* Quick Stats */}
+            {/* Enhanced Tournament Statistics */}
             <div className="bg-gray-800 p-4 rounded-lg">
-              <h3 className="text-lg font-semibold mb-4">Your Status</h3>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Budget Left:</span>
-                  <span className="font-medium">£500m</span> {/* Placeholder */}
+              <h3 className="text-lg font-semibold mb-4">Tournament Stats</h3>
+              <div className="space-y-3">
+                <div className="text-center p-3 bg-gray-700 rounded-lg">
+                  <div className="text-2xl font-bold text-green-400">{teams.length}</div>
+                  <div className="text-xs text-gray-400">Total Teams</div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Teams:</span>
-                  <span className="font-medium">0/{tournament.teams_per_user}</span>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="text-center p-2 bg-gray-700 rounded">
+                    <div className="text-lg font-bold text-blue-400">{participants.length}</div>
+                    <div className="text-xs text-gray-400">Players</div>
+                  </div>
+                  <div className="text-center p-2 bg-gray-700 rounded">
+                    <div className="text-lg font-bold text-purple-400">{tournament.teams_per_user || 4}</div>
+                    <div className="text-xs text-gray-400">Per Player</div>
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Total Spent:</span>
-                  <span className="font-medium">£0m</span>
+                <div className="text-center p-2 bg-gray-700 rounded">
+                  <div className="text-lg font-bold text-yellow-400">{formatCurrency(tournament.budget_per_user || 500000000)}</div>
+                  <div className="text-xs text-gray-400">Budget Each</div>
                 </div>
               </div>
+            </div>
+
+            {/* Your Status */}
+            <div className="bg-gray-800 p-4 rounded-lg">
+              <h3 className="text-lg font-semibold mb-4">Your Status</h3>
+              {userSquads[user.id] ? (
+                <div className="space-y-3">
+                  <div className="text-center p-3 bg-gray-700 rounded-lg">
+                    <div className="text-2xl font-bold text-green-400">
+                      {formatCurrency(userSquads[user.id].remaining_budget)}
+                    </div>
+                    <div className="text-xs text-gray-400">Budget Remaining</div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="text-center p-2 bg-gray-700 rounded">
+                      <div className="text-lg font-bold text-blue-400">
+                        {userSquads[user.id].teams_count}/{tournament.teams_per_user || 4}
+                      </div>
+                      <div className="text-xs text-gray-400">Teams</div>
+                    </div>
+                    <div className="text-center p-2 bg-gray-700 rounded">
+                      <div className="text-lg font-bold text-red-400">
+                        {formatCurrency(userSquads[user.id].total_spent)}
+                      </div>
+                      <div className="text-xs text-gray-400">Spent</div>
+                    </div>
+                  </div>
+                  
+                  {/* Budget Progress Bar */}
+                  <div className="mt-3">
+                    <div className="flex justify-between text-xs text-gray-400 mb-1">
+                      <span>Budget Used</span>
+                      <span>
+                        {((userSquads[user.id].total_spent / (tournament.budget_per_user || 500000000)) * 100).toFixed(0)}%
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-600 rounded-full h-2">
+                      <div 
+                        className="h-2 bg-gradient-to-r from-green-500 to-blue-500 rounded-full transition-all duration-300"
+                        style={{ 
+                          width: `${Math.min((userSquads[user.id].total_spent / (tournament.budget_per_user || 500000000)) * 100, 100)}%` 
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center text-gray-400 py-4">
+                  <div className="text-sm">Loading your status...</div>
+                </div>
+              )}
             </div>
           </div>
         </div>
