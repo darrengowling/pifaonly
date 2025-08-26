@@ -398,8 +398,8 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* Enhanced Action Sections */}
-      <div className="grid md:grid-cols-2 gap-8">
+      {/* Enhanced Action Sections with Achievements */}
+      <div className="grid lg:grid-cols-3 gap-8">
         {/* Create Tournament Card */}
         <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 hover:border-blue-500 transition-colors">
           <div className="flex items-center gap-3 mb-4">
@@ -436,70 +436,78 @@ const Dashboard = () => {
           </button>
         </div>
 
-        {/* Enhanced Tournaments Display */}
-        <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-r from-green-600 to-blue-600 rounded-full flex items-center justify-center">
-                <span className="text-xl">🎪</span>
+        {/* Tournaments Center */}
+        <div className="lg:col-span-2">
+          {/* Enhanced Tournaments Display */}
+          <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 h-full">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-gradient-to-r from-green-600 to-blue-600 rounded-full flex items-center justify-center">
+                  <span className="text-xl">🎪</span>
+                </div>
+                <div>
+                  <h2 className="text-xl font-semibold">Tournament Center</h2>
+                  <p className="text-sm text-gray-400">
+                    {tournamentFilter === 'all' && `${tournaments.length} total tournaments`}
+                    {tournamentFilter === 'my' && `${getFilteredTournaments().length} tournaments you've joined`}
+                    {tournamentFilter === 'active' && `${getFilteredTournaments().length} live auctions`}
+                    {tournamentFilter === 'pending' && `${getFilteredTournaments().length} tournaments waiting to start`}
+                    {tournamentFilter === 'created' && `${getFilteredTournaments().length} tournaments you created`}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-xl font-semibold">Tournament Center</h2>
-                <p className="text-sm text-gray-400">
-                  {tournamentFilter === 'all' && `${tournaments.length} total tournaments`}
-                  {tournamentFilter === 'my' && `${getFilteredTournaments().length} tournaments you've joined`}
-                  {tournamentFilter === 'active' && `${getFilteredTournaments().length} live auctions`}
-                  {tournamentFilter === 'pending' && `${getFilteredTournaments().length} tournaments waiting to start`}
-                  {tournamentFilter === 'created' && `${getFilteredTournaments().length} tournaments you created`}
-                </p>
+              
+              {/* Quick Actions */}
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => navigate('/create')}
+                  className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-medium transition-colors text-sm"
+                >
+                  ➕ Create
+                </button>
+                <button
+                  onClick={() => setShowJoinByCode(true)}
+                  className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg font-medium transition-colors text-sm"
+                >
+                  🎯 Join Code
+                </button>
               </div>
             </div>
             
-            {/* Quick Actions */}
-            <div className="flex gap-2">
-              <button 
-                onClick={() => navigate('/create')}
-                className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-medium transition-colors text-sm"
-              >
-                ➕ Create
-              </button>
-              <button
-                onClick={() => setShowJoinByCode(true)}
-                className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg font-medium transition-colors text-sm"
-              >
-                🎯 Join Code
-              </button>
+            <div className="space-y-3 max-h-96 overflow-y-auto">
+              {getFilteredTournaments().length === 0 ? (
+                <div className="text-center py-8">
+                  <div className="text-4xl mb-3">
+                    {tournamentFilter === 'all' && '🏁'}
+                    {tournamentFilter === 'my' && '👤'}
+                    {tournamentFilter === 'active' && '🎪'}
+                    {tournamentFilter === 'pending' && '⏳'}
+                    {tournamentFilter === 'created' && '🏆'}
+                  </div>
+                  <p className="text-gray-400 mb-4">
+                    {tournamentFilter === 'all' && 'No tournaments yet.'}
+                    {tournamentFilter === 'my' && "You haven't joined any tournaments yet."}
+                    {tournamentFilter === 'active' && 'No live auctions at the moment.'}
+                    {tournamentFilter === 'pending' && 'No tournaments waiting to start.'}
+                    {tournamentFilter === 'created' && "You haven't created any tournaments yet."}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {tournamentFilter === 'my' ? 'Join a tournament to get started!' : 'Create your first tournament to get started!'}
+                  </p>
+                </div>
+              ) : (
+                getFilteredTournaments().map(tournament => (
+                  <TournamentCard key={tournament.id} tournament={tournament} />
+                ))
+              )}
             </div>
           </div>
-          
-          <div className="space-y-3 max-h-96 overflow-y-auto">
-            {getFilteredTournaments().length === 0 ? (
-              <div className="text-center py-8">
-                <div className="text-4xl mb-3">
-                  {tournamentFilter === 'all' && '🏁'}
-                  {tournamentFilter === 'my' && '👤'}
-                  {tournamentFilter === 'active' && '🎪'}
-                  {tournamentFilter === 'pending' && '⏳'}
-                  {tournamentFilter === 'created' && '🏆'}
-                </div>
-                <p className="text-gray-400 mb-4">
-                  {tournamentFilter === 'all' && 'No tournaments yet.'}
-                  {tournamentFilter === 'my' && "You haven't joined any tournaments yet."}
-                  {tournamentFilter === 'active' && 'No live auctions at the moment.'}
-                  {tournamentFilter === 'pending' && 'No tournaments waiting to start.'}
-                  {tournamentFilter === 'created' && "You haven't created any tournaments yet."}
-                </p>
-                <p className="text-sm text-gray-500">
-                  {tournamentFilter === 'my' ? 'Join a tournament to get started!' : 'Create your first tournament to get started!'}
-                </p>
-              </div>
-            ) : (
-              getFilteredTournaments().map(tournament => (
-                <TournamentCard key={tournament.id} tournament={tournament} />
-              ))
-            )}
-          </div>
         </div>
+      </div>
+
+      {/* Achievements Section */}
+      <div className="mt-8">
+        <UserAchievements user={user} tournaments={tournaments} />
       </div>
     </div>
   );
