@@ -509,6 +509,11 @@ const Dashboard = () => {
       <div className="mt-8">
         <UserAchievements user={user} tournaments={tournaments} />
       </div>
+
+      {/* Analytics Section */}
+      <div className="mt-8">
+        <TournamentAnalytics tournaments={tournaments} user={user} />
+      </div>
     </div>
   );
 };
