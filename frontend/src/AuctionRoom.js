@@ -203,6 +203,8 @@ const AuctionRoom = ({ tournamentId, user }) => {
   const [selectedTeam, setSelectedTeam] = useState(null); // NEW: For team highlighting
   const [userSquads, setUserSquads] = useState({}); // NEW: Track user squads for budget display
   const [teamBidHistory, setTeamBidHistory] = useState([]); // NEW: Bid history for current team
+  const [showTeamDetail, setShowTeamDetail] = useState(false); // NEW: Show team detail panel
+  const [detailTeam, setDetailTeam] = useState(null); // NEW: Team to show in detail panel
   
   const chatContainerRef = useRef(null);
   const timerRef = useRef(null);
