@@ -539,6 +539,11 @@ const AuctionRoom = ({ tournamentId, user }) => {
     placeBid();
   };
 
+  const showTeamDetails = (team) => {
+    setDetailTeam(team);
+    setShowTeamDetail(true);
+  };
+
   if (!tournament) {
     return (
       <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
