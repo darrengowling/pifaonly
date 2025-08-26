@@ -769,15 +769,48 @@ class PIFAAuctionAPITester:
             print("❌ Squad creation and bidding test FAILED!")
             return 1
 
+    def run_join_code_tests_only(self):
+        """Run only the join code functionality tests"""
+        print("🎯 Running Join Code Tests Only")
+        print(f"Testing against: {self.base_url}")
+        print("=" * 60)
+        
+        # Run join code specific tests
+        tests = [
+            self.test_join_code_functionality,
+            self.test_join_code_uniqueness
+        ]
+        
+        all_passed = True
+        for test in tests:
+            try:
+                success = test()
+                if not success:
+                    all_passed = False
+            except Exception as e:
+                print(f"❌ Test {test.__name__} failed with exception: {str(e)}")
+                all_passed = False
+        
+        print("\n" + "=" * 60)
+        if all_passed:
+            print("🎉 All join code tests PASSED!")
+            return 0
+        else:
+            print("❌ Some join code tests FAILED!")
+            return 1
+
 def main():
     import sys
     tester = PIFAAuctionAPITester()
     
-    # Check if we should run only the squad bidding test
-    if len(sys.argv) > 1 and sys.argv[1] == "--squad-test":
-        return tester.run_squad_bidding_test_only()
-    else:
-        return tester.run_all_tests()
+    # Check command line arguments
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "--squad-test":
+            return tester.run_squad_bidding_test_only()
+        elif sys.argv[1] == "--join-code-test":
+            return tester.run_join_code_tests_only()
+    
+    return tester.run_all_tests()
 
 if __name__ == "__main__":
     sys.exit(main())
