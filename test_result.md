@@ -358,6 +358,18 @@ metadata:
           agent: "testing"
           comment: "COMPREHENSIVE USER REGISTRATION TESTING COMPLETED: Investigated reported critical issue where 'new users aren't being registered when they join tournaments'. TESTED ALL SCENARIOS: 1) User creation endpoint (POST /api/users) - WORKING PERFECTLY with proper user creation and retrieval, 2) Tournament join flow with new users - WORKING PERFECTLY with automatic squad creation and participant addition, 3) Join-by-code flow with new users - WORKING PERFECTLY with proper user registration and tournament joining, 4) Database persistence verification - ALL USERS PERSISTING CORRECTLY with proper data integrity. RESULTS: All 29/29 backend API tests passed + comprehensive user registration test suite (20+ additional tests) passed. CONCLUSION: NO USER REGISTRATION ISSUES FOUND - all functionality working correctly. Users are created successfully via POST /api/users, tournament joining works for new users, join-by-code works for new users, users persist correctly in database, squad creation happens automatically during joins, no registration errors detected. The reported issue may be frontend-related, user-specific, or resolved by previous fixes rather than a backend registration problem."
 
+  - task: "Fresh Database Cleanup for Real Friends Testing"
+    implemented: true
+    working: true
+    file: "/app/backend_test.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "FRESH DATABASE CLEANUP SUCCESSFULLY COMPLETED: Performed comprehensive database cleanup as requested by user to provide completely fresh start for testing with real friends. REMOVED: 10 tournaments (including 'ch1', 'User Registration Test Tournament', 'Registration Test Tournament 1756250876', 'Test Tournament 1756250884', 'Join Code Test Tournament 1756250884', and 5 'Uniqueness Test Tournament' entries), 18 test users (including User_1756251005308 and other test users), 15 squads, 0 bids, 1 chat message. PRESERVED: All 64 teams (32 Champions League + 32 Europa League teams) for new tournament creation. VERIFIED: GET /api/tournaments returns empty list (0 tournaments), GET /api/teams returns 64 teams (32 CL + 32 EL), database is completely clean and ready for fresh testing with real friends without any confusing test data. All cleanup verification tests passed."
+
 test_plan:
   current_focus: []
   stuck_tasks: []
@@ -365,6 +377,7 @@ test_plan:
   test_priority: "high_first"
   comprehensive_testing_complete: true
   phase_1_3_enhancements_tested: true
+  fresh_database_cleanup_complete: true
 
 agent_communication:
     - agent: "main"
@@ -391,3 +404,5 @@ agent_communication:
       message: "DATABASE CLEANUP FOR FRESH START COMPLETED: Successfully performed comprehensive database cleanup as requested by user. REMOVED: 21 tournaments (including 'Friends Championship 2025', 'Friends Cup 2025', and all other test tournaments), 44 test users (including Alex, Sarah, Mike, Emma, Tom, and all other dummy users), 32 squads, 4 bids, 4 chat messages. PRESERVED: All 64 teams (32 Champions League + 32 Europa League teams) for new tournament creation. VERIFIED: GET /api/tournaments returns empty list (0 tournaments), teams collection intact with 64 teams. Database is now completely clean and ready for fresh testing with real friends without any confusing test data."
     - agent: "testing"
       message: "USER REGISTRATION ISSUE INVESTIGATION COMPLETED: Conducted comprehensive testing of reported user registration issues during tournament joining. TESTED ALL SCENARIOS: 1) User creation endpoint (POST /api/users) - WORKING PERFECTLY, 2) Tournament join flow with new users - WORKING PERFECTLY, 3) Join-by-code flow with new users - WORKING PERFECTLY, 4) Database persistence verification - ALL USERS PERSISTING CORRECTLY. RESULTS: All 29/29 backend API tests passed + comprehensive user registration test suite passed. CONCLUSION: No user registration issues found - all functionality working correctly. Users are created successfully, tournament joining works for new users, join-by-code works for new users, users persist in database, squad creation happens automatically, no registration errors detected. The reported issue may be frontend-related or user-specific rather than a backend registration problem."
+    - agent: "testing"
+      message: "FRESH DATABASE CLEANUP FOR REAL FRIENDS TESTING COMPLETED: Successfully performed comprehensive database cleanup as requested by user to provide completely fresh start for testing with real friends. REMOVED: 10 tournaments (including 'ch1', 'User Registration Test Tournament', 'Registration Test Tournament 1756250876', 'Test Tournament 1756250884', 'Join Code Test Tournament 1756250884', and 5 'Uniqueness Test Tournament' entries), 18 test users (including User_1756251005308 and other test users), 15 squads, 0 bids, 1 chat message. PRESERVED: All 64 teams (32 Champions League + 32 Europa League teams) for new tournament creation. VERIFIED: GET /api/tournaments returns empty list (0 tournaments), GET /api/teams returns 64 teams (32 CL + 32 EL), database is completely clean and ready for fresh testing with real friends without any confusing test data. All cleanup verification tests passed. The database is now in perfect condition for the user to start fresh with their real friends."
