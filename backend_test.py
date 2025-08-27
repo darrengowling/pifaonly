@@ -1777,6 +1777,243 @@ class PIFAAuctionAPITester:
             print("Critical issues found in user registration process!")
             return 1
 
+    def run_fresh_database_cleanup(self):
+        """
+        Perform comprehensive database cleanup for Friends of PIFA
+        Remove all test tournaments, users, squads, bids, and chat messages
+        Preserve only the 64 teams (32 Champions League + 32 Europa League)
+        """
+        print("\n🧹 FRESH DATABASE CLEANUP FOR FRIENDS OF PIFA")
+        print("=" * 80)
+        print("Removing ALL test data to provide a completely fresh start...")
+        print("Preserving only the 64 core teams for new tournament creation")
+        print("=" * 80)
+        
+        # Step 1: Check current database state
+        print("\n📊 STEP 1: CHECKING CURRENT DATABASE STATE")
+        print("-" * 50)
+        
+        # Check tournaments
+        tournaments_success, tournaments_response = self.run_test(
+            "Check Current Tournaments",
+            "GET",
+            "tournaments",
+            200
+        )
+        
+        tournament_count = len(tournaments_response) if tournaments_success else 0
+        print(f"📋 Current tournaments: {tournament_count}")
+        
+        if tournament_count > 0:
+            print("   Tournament names found:")
+            for tournament in tournaments_response[:10]:  # Show first 10
+                print(f"   - {tournament.get('name', 'Unknown')}")
+            if tournament_count > 10:
+                print(f"   ... and {tournament_count - 10} more")
+        
+        # Check teams (should be preserved)
+        teams_success, teams_response = self.run_test(
+            "Check Teams (Should be Preserved)",
+            "GET",
+            "teams",
+            200
+        )
+        
+        team_count = len(teams_response) if teams_success else 0
+        print(f"⚽ Current teams: {team_count} (should remain 64)")
+        
+        # Step 2: Perform direct database cleanup
+        print("\n🗑️ STEP 2: PERFORMING COMPREHENSIVE DATABASE CLEANUP")
+        print("-" * 50)
+        
+        try:
+            # Import required modules
+            from motor.motor_asyncio import AsyncIOMotorClient
+            import os
+            import asyncio
+            
+            # Connect to MongoDB using the same connection as the backend
+            mongo_url = "mongodb://localhost:27017"  # From backend/.env
+            client = AsyncIOMotorClient(mongo_url)
+            db = client["test_database"]  # From backend/.env
+            
+            async def perform_cleanup():
+                cleanup_results = {}
+                
+                print("   Cleaning tournaments...")
+                tournaments_result = await db.tournaments.delete_many({})
+                cleanup_results['tournaments'] = tournaments_result.deleted_count
+                
+                print("   Cleaning users...")
+                users_result = await db.users.delete_many({})
+                cleanup_results['users'] = users_result.deleted_count
+                
+                print("   Cleaning squads...")
+                squads_result = await db.squads.delete_many({})
+                cleanup_results['squads'] = squads_result.deleted_count
+                
+                print("   Cleaning bids...")
+                bids_result = await db.bids.delete_many({})
+                cleanup_results['bids'] = bids_result.deleted_count
+                
+                print("   Cleaning chat messages...")
+                chat_result = await db.chat_messages.delete_many({})
+                cleanup_results['chat_messages'] = chat_result.deleted_count
+                
+                # Verify teams are still there
+                teams_count = await db.teams.count_documents({})
+                cleanup_results['teams_remaining'] = teams_count
+                
+                # Get detailed team counts by competition
+                cl_count = await db.teams.count_documents({"competition": "champions_league"})
+                el_count = await db.teams.count_documents({"competition": "europa_league"})
+                cleanup_results['champions_league_teams'] = cl_count
+                cleanup_results['europa_league_teams'] = el_count
+                
+                return cleanup_results
+            
+            # Run the cleanup
+            cleanup_results = asyncio.run(perform_cleanup())
+            client.close()
+            
+            print("✅ Database cleanup completed successfully!")
+            print("\n📊 CLEANUP RESULTS:")
+            print(f"   🗑️ Tournaments removed: {cleanup_results['tournaments']}")
+            print(f"   🗑️ Users removed: {cleanup_results['users']}")
+            print(f"   🗑️ Squads removed: {cleanup_results['squads']}")
+            print(f"   🗑️ Bids removed: {cleanup_results['bids']}")
+            print(f"   🗑️ Chat messages removed: {cleanup_results['chat_messages']}")
+            print(f"   ⚽ Teams preserved: {cleanup_results['teams_remaining']}")
+            print(f"   🏆 Champions League teams: {cleanup_results['champions_league_teams']}")
+            print(f"   🏆 Europa League teams: {cleanup_results['europa_league_teams']}")
+            
+            # Verify teams count is correct (should be 64: 32 CL + 32 EL)
+            expected_total = 64
+            expected_cl = 32
+            expected_el = 32
+            
+            if cleanup_results['teams_remaining'] != expected_total:
+                print(f"⚠️ WARNING: Expected {expected_total} teams, found {cleanup_results['teams_remaining']}")
+                return False
+                
+            if cleanup_results['champions_league_teams'] != expected_cl:
+                print(f"⚠️ WARNING: Expected {expected_cl} Champions League teams, found {cleanup_results['champions_league_teams']}")
+                return False
+                
+            if cleanup_results['europa_league_teams'] != expected_el:
+                print(f"⚠️ WARNING: Expected {expected_el} Europa League teams, found {cleanup_results['europa_league_teams']}")
+                return False
+                
+        except Exception as e:
+            print(f"❌ Database cleanup failed: {str(e)}")
+            print("Note: This might be due to connection issues or missing dependencies")
+            return False
+        
+        # Step 3: Verify cleanup via API calls
+        print("\n✅ STEP 3: VERIFYING CLEANUP VIA API")
+        print("-" * 50)
+        
+        # Check tournaments (should be empty)
+        verify_tournaments_success, verify_tournaments_response = self.run_test(
+            "Verify Tournaments Cleaned",
+            "GET",
+            "tournaments",
+            200
+        )
+        
+        if verify_tournaments_success:
+            remaining_tournaments = len(verify_tournaments_response)
+            if remaining_tournaments == 0:
+                print("✅ All tournaments successfully removed")
+            else:
+                print(f"⚠️ {remaining_tournaments} tournaments still remain")
+                for tournament in verify_tournaments_response:
+                    print(f"   - {tournament.get('name', 'Unknown')}")
+                return False
+        else:
+            print("❌ Could not verify tournament cleanup")
+            return False
+        
+        # Check teams (should still be 64)
+        verify_teams_success, verify_teams_response = self.run_test(
+            "Verify Teams Preserved",
+            "GET",
+            "teams",
+            200
+        )
+        
+        if verify_teams_success:
+            remaining_teams = len(verify_teams_response)
+            if remaining_teams == 64:
+                print("✅ All 64 teams preserved correctly")
+                
+                # Check Champions League teams
+                cl_success, cl_response = self.run_test(
+                    "Verify Champions League Teams",
+                    "GET",
+                    "teams",
+                    200,
+                    params={"competition": "champions_league"}
+                )
+                
+                if cl_success and len(cl_response) == 32:
+                    print("✅ 32 Champions League teams preserved")
+                else:
+                    print(f"⚠️ Champions League teams: {len(cl_response) if cl_success else 'unknown'}")
+                    return False
+                
+                # Check Europa League teams
+                el_success, el_response = self.run_test(
+                    "Verify Europa League Teams",
+                    "GET",
+                    "teams",
+                    200,
+                    params={"competition": "europa_league"}
+                )
+                
+                if el_success and len(el_response) == 32:
+                    print("✅ 32 Europa League teams preserved")
+                else:
+                    print(f"⚠️ Europa League teams: {len(el_response) if el_success else 'unknown'}")
+                    return False
+                    
+            else:
+                print(f"❌ Team count incorrect: Expected 64, found {remaining_teams}")
+                return False
+        else:
+            print("❌ Could not verify team preservation")
+            return False
+        
+        print("\n🎉 FRESH DATABASE CLEANUP COMPLETED SUCCESSFULLY!")
+        print("=" * 80)
+        print("✅ ALL test tournaments removed (including 'User Registration Test Tournament', 'ch1', etc.)")
+        print("✅ ALL test users removed (User_1756251005308, etc.)")
+        print("✅ ALL squads cleared")
+        print("✅ ALL bids cleared")
+        print("✅ ALL chat messages cleared")
+        print("✅ Core team data preserved (32 Champions League + 32 Europa League teams)")
+        print("✅ Database is completely clean and ready for fresh testing with real friends")
+        print("=" * 80)
+        
+        return True
+
+    def run_fresh_cleanup_only(self):
+        """Run only the fresh database cleanup"""
+        print("🧹 Running Fresh Database Cleanup for Friends of PIFA")
+        print(f"Testing against: {self.base_url}")
+        print("=" * 80)
+        
+        success = self.run_fresh_database_cleanup()
+        
+        print("\n" + "=" * 80)
+        if success:
+            print("🎉 Fresh Database Cleanup COMPLETED SUCCESSFULLY!")
+            print("The database is now completely clean and ready for fresh testing with real friends!")
+            return 0
+        else:
+            print("❌ Fresh Database Cleanup FAILED!")
+            return 1
+
 def main():
     import sys
     tester = PIFAAuctionAPITester()
