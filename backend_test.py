@@ -2028,6 +2028,8 @@ def main():
             return tester.run_comprehensive_friends_scenario_only()
         elif sys.argv[1] == "--cleanup":
             return tester.run_database_cleanup_only()
+        elif sys.argv[1] == "--fresh-cleanup":
+            return tester.run_fresh_cleanup_only()
         elif sys.argv[1] == "--user-registration":
             return tester.run_user_registration_test_only()
     
