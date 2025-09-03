@@ -358,17 +358,41 @@ metadata:
           agent: "testing"
           comment: "COMPREHENSIVE USER REGISTRATION TESTING COMPLETED: Investigated reported critical issue where 'new users aren't being registered when they join tournaments'. TESTED ALL SCENARIOS: 1) User creation endpoint (POST /api/users) - WORKING PERFECTLY with proper user creation and retrieval, 2) Tournament join flow with new users - WORKING PERFECTLY with automatic squad creation and participant addition, 3) Join-by-code flow with new users - WORKING PERFECTLY with proper user registration and tournament joining, 4) Database persistence verification - ALL USERS PERSISTING CORRECTLY with proper data integrity. RESULTS: All 29/29 backend API tests passed + comprehensive user registration test suite (20+ additional tests) passed. CONCLUSION: NO USER REGISTRATION ISSUES FOUND - all functionality working correctly. Users are created successfully via POST /api/users, tournament joining works for new users, join-by-code works for new users, users persist correctly in database, squad creation happens automatically during joins, no registration errors detected. The reported issue may be frontend-related, user-specific, or resolved by previous fixes rather than a backend registration problem."
 
-  - task: "Fresh Database Cleanup for Real Friends Testing"
+  - task: "Marketing Website Implementation"
     implemented: true
     working: true
-    file: "/app/backend_test.py"
+    file: "/app/marketing-website/"
     stuck_count: 0
     priority: "high"
     needs_retesting: false
     status_history:
         - working: true
-          agent: "testing"
-          comment: "FRESH DATABASE CLEANUP SUCCESSFULLY COMPLETED: Performed comprehensive database cleanup as requested by user to provide completely fresh start for testing with real friends. REMOVED: 10 tournaments (including 'ch1', 'User Registration Test Tournament', 'Registration Test Tournament 1756250876', 'Test Tournament 1756250884', 'Join Code Test Tournament 1756250884', and 5 'Uniqueness Test Tournament' entries), 18 test users (including User_1756251005308 and other test users), 15 squads, 0 bids, 1 chat message. PRESERVED: All 64 teams (32 Champions League + 32 Europa League teams) for new tournament creation. VERIFIED: GET /api/tournaments returns empty list (0 tournaments), GET /api/teams returns 64 teams (32 CL + 32 EL), database is completely clean and ready for fresh testing with real friends without any confusing test data. All cleanup verification tests passed."
+          agent: "main"
+          comment: "MARKETING WEBSITE SUCCESSFULLY IMPLEMENTED: Created comprehensive Next.js marketing website for Friends of PIFA with the following features: 1) COMPLETE WEBSITE STRUCTURE: Hero section with gradient backgrounds, comprehensive navigation, responsive footer, SEO-optimized layout with proper meta tags and structured data. 2) CONTENT SECTIONS: Hero with compelling copy and CTAs, Stats section showing traction, How It Works with 4-step process, Features grid with 8 key features, Testimonials from beta users, Investor section with metrics and traction data, Waitlist signup with functional form. 3) BLOG FUNCTIONALITY: Complete blog system with index page, individual post pages, 3 sample articles, responsive design with featured images. 4) TECHNICAL FEATURES: Dark/light theme toggle, responsive design, working waitlist API endpoint, proper error handling, form validation. 5) PROFESSIONAL DESIGN: Modern sports aesthetic, consistent branding, high-quality stadium images, smooth animations with Framer Motion. Website successfully running on port 3001 with all sections functional and tested."
+
+  - task: "Marketing Website - Waitlist API Integration"
+    implemented: true
+    working: true
+    file: "/app/marketing-website/pages/api/waitlist.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "WAITLIST API SUCCESSFULLY IMPLEMENTED: Created functional waitlist API endpoint at /api/waitlist with proper validation, error handling, and success responses. Form tested and working - accepts name, email, group size, and optional message. Ready for integration with email services like ConvertKit or Mailchimp in production."
+
+  - task: "Marketing Website - Blog System"
+    implemented: true
+    working: true
+    file: "/app/marketing-website/pages/blog/"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "BLOG SYSTEM SUCCESSFULLY IMPLEMENTED: Created complete blog functionality with index page showing article grid, individual post pages with full content, proper SEO meta tags, responsive design with featured images, and 3 sample articles covering product introduction, psychology of exclusive ownership, and technical deep dive. Ready for CMS integration or markdown file management."
 
 test_plan:
   current_focus: []
