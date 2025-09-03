@@ -227,7 +227,7 @@ const InvestorSection = () => {
               <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg">
                 <div className="text-center">
                   <div className="text-4xl font-bold text-purple-600 dark:text-purple-400 mb-2">
-                    <1%
+                    &lt;1%
                   </div>
                   <div className="text-gray-600 dark:text-gray-300 mb-1">
                     Market Share Needed
