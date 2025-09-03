@@ -117,7 +117,7 @@ const InvestorSection = () => {
               className="card p-6 text-center"
             >
               <div className={`w-8 h-8 ${metric.color} mx-auto mb-4 flex items-center justify-center`}>
-                <metric.icon />
+                {/* Icons placeholder */}
               </div>
               <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
                 {metric.value}
