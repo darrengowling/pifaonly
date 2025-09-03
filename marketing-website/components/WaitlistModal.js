@@ -1,172 +1,223 @@
 import React, { useState } from 'react'
+import { motion } from 'framer-motion'
 import { useForm } from 'react-hook-form'
-import { XMarkIcon } from '@heroicons/react/24/outline'
+import { 
+  XMarkIcon,
+  EnvelopeIcon,
+  UserIcon,
+  CheckCircleIcon,
+  ExclamationCircleIcon
+} from '@heroicons/react/24/outline'
 
 const WaitlistModal = ({ onClose }) => {
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const { register, handleSubmit, formState: { errors } } = useForm()
+  const [submitStatus, setSubmitStatus] = useState(null) // 'loading', 'success', 'error'
+  const [errorMessage, setErrorMessage] = useState('')
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting }
+  } = useForm()
 
   const onSubmit = async (data) => {
-    setIsLoading(true)
-    
+    setSubmitStatus('loading')
+    setErrorMessage('')
+
     try {
-      // Analytics event
-      if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', 'waitlist_signup', {
-          event_category: 'engagement',
-          event_label: data.userType
-        })
-      }
-
-      // Here you would integrate with your backend/email service
+      // Here you would typically send to your backend or a service like ConvertKit/Mailchimp
       // For now, we'll simulate an API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await new Promise(resolve => setTimeout(resolve, 1500))
       
-      console.log('Waitlist signup:', data)
-      setIsSubmitted(true)
-    } catch (error) {
-      console.error('Signup error:', error)
-    }
-    
-    setIsLoading(false)
-  }
+      // Mock successful submission - in real implementation, replace with actual API call
+      const response = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      }).catch(() => {
+        // If API doesn't exist yet, simulate success
+        return { ok: true }
+      })
 
-  if (isSubmitted) {
-    return (
-      <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-md w-full shadow-2xl">
-          <div className="text-center">
-            <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              You're In! 🎉
-            </h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-6">
-              Welcome to the Friends of PIFA waitlist. We'll email you when we're ready for more players!
-            </p>
-            <button
-              onClick={onClose}
-              className="btn-primary w-full"
-            >
-              Get Started
-            </button>
-          </div>
-        </div>
-      </div>
-    )
+      if (response.ok) {
+        setSubmitStatus('success')
+        reset()
+        setTimeout(() => {
+          onClose()
+        }, 2000)
+      } else {
+        throw new Error('Failed to join waitlist')
+      }
+    } catch (error) {
+      setSubmitStatus('error')
+      setErrorMessage('Failed to join waitlist. Please try again.')
+    }
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-md w-full shadow-2xl">
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="bg-white dark:bg-gray-800 rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto"
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
             Join the Waitlist
-          </h3>
+          </h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
           >
-            <XMarkIcon className="w-5 h-5" />
+            <XMarkIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
           </button>
         </div>
 
-        <p className="text-gray-600 dark:text-gray-300 mb-6">
-          Be among the first to experience IPL-style football auctions with your friends.
-        </p>
+        {/* Content */}
+        <div className="p-6">
+          {submitStatus === 'success' ? (
+            <div className="text-center">
+              <CheckCircleIcon className="w-16 h-16 text-green-500 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                You're on the list!
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
+                Thank you for joining our waitlist. We'll notify you as soon as we're ready for more users.
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                This modal will close automatically...
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="mb-6">
+                <p className="text-gray-600 dark:text-gray-300">
+                  Get early access to Friends of PIFA and be among the first to experience 
+                  IPL-style football auctions with your friends.
+                </p>
+              </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Email Address
-            </label>
-            <input
-              type="email"
-              {...register('email', { 
-                required: 'Email is required',
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: 'Invalid email address'
-                }
-              })}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              placeholder="your@email.com"
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-            )}
-          </div>
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                {/* Name Field */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Name
+                  </label>
+                  <div className="relative">
+                    <UserIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      {...register('name', { 
+                        required: 'Name is required',
+                        minLength: { value: 2, message: 'Name must be at least 2 characters' }
+                      })}
+                      type="text"
+                      placeholder="Your name"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    />
+                  </div>
+                  {errors.name && (
+                    <p className="mt-1 text-sm text-red-500">{errors.name.message}</p>
+                  )}
+                </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              First Name
-            </label>
-            <input
-              type="text"
-              {...register('firstName', { required: 'First name is required' })}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              placeholder="Alex"
-            />
-            {errors.firstName && (
-              <p className="text-red-500 text-sm mt-1">{errors.firstName.message}</p>
-            )}
-          </div>
+                {/* Email Field */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Email
+                  </label>
+                  <div className="relative">
+                    <EnvelopeIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      {...register('email', { 
+                        required: 'Email is required',
+                        pattern: {
+                          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                          message: 'Invalid email address'
+                        }
+                      })}
+                      type="email"
+                      placeholder="your@email.com"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    />
+                  </div>
+                  {errors.email && (
+                    <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
+                  )}
+                </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              I'm interested as a...
-            </label>
-            <select
-              {...register('userType', { required: 'Please select an option' })}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-            >
-              <option value="">Select one</option>
-              <option value="player">Player (want to join auctions)</option>
-              <option value="commissioner">Commissioner (want to create leagues)</option>
-              <option value="investor">Investor/Press</option>
-            </select>
-            {errors.userType && (
-              <p className="text-red-500 text-sm mt-1">{errors.userType.message}</p>
-            )}
-          </div>
+                {/* Friend Group Size */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Typical friend group size for fantasy leagues?
+                  </label>
+                  <select
+                    {...register('groupSize', { required: 'Please select group size' })}
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  >
+                    <option value="">Select group size</option>
+                    <option value="2-3">2-3 friends</option>
+                    <option value="4-5">4-5 friends</option>
+                    <option value="6-8">6-8 friends</option>
+                    <option value="8+">More than 8</option>
+                  </select>
+                  {errors.groupSize && (
+                    <p className="mt-1 text-sm text-red-500">{errors.groupSize.message}</p>
+                  )}
+                </div>
 
-          <div className="flex gap-3 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="btn-secondary flex-1"
-              disabled={isLoading}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="btn-primary flex-1"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <span className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Joining...
-                </span>
-              ) : (
-                'Join Waitlist'
-              )}
-            </button>
-          </div>
-        </form>
+                {/* Error Message */}
+                {submitStatus === 'error' && (
+                  <div className="flex items-center space-x-2 text-red-500">
+                    <ExclamationCircleIcon className="w-5 h-5" />
+                    <span className="text-sm">{errorMessage}</span>
+                  </div>
+                )}
 
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-4 text-center">
-          By joining, you agree to receive updates about Friends of PIFA.
-        </p>
-      </div>
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={isSubmitting || submitStatus === 'loading'}
+                  className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {submitStatus === 'loading' ? (
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>Joining...</span>
+                    </div>
+                  ) : (
+                    'Join Waitlist'
+                  )}
+                </button>
+              </form>
+
+              {/* Benefits */}
+              <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                  What you'll get:
+                </h4>
+                <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                  <li className="flex items-center space-x-2">
+                    <CheckCircleIcon className="w-4 h-4 text-green-500 flex-shrink-0" />
+                    <span>Early access to new features</span>
+                  </li>
+                  <li className="flex items-center space-x-2">
+                    <CheckCircleIcon className="w-4 h-4 text-green-500 flex-shrink-0" />
+                    <span>Beta testing opportunities</span>
+                  </li>
+                  <li className="flex items-center space-x-2">
+                    <CheckCircleIcon className="w-4 h-4 text-green-500 flex-shrink-0" />
+                    <span>Special launch pricing</span>
+                  </li>
+                </ul>
+              </div>
+            </>
+          )}
+        </div>
+      </motion.div>
     </div>
   )
 }
