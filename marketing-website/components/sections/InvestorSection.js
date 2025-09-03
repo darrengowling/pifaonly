@@ -116,7 +116,9 @@ const InvestorSection = () => {
               transition={{ duration: 0.6, delay: 0.1 * index }}
               className="card p-6 text-center"
             >
-              <metric.icon className={`w-8 h-8 ${metric.color} mx-auto mb-4`} />
+              <div className={`w-8 h-8 ${metric.color} mx-auto mb-4 flex items-center justify-center`}>
+                <metric.icon />
+              </div>
               <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
                 {metric.value}
               </div>
