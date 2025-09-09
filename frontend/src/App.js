@@ -4,6 +4,7 @@ import axios from "axios";
 import "./App.css";
 import AuctionRoom from "./AuctionRoom";
 import UserGuide from "./components/UserGuide";
+import LandingPage from "./pages/LandingPage";
 
 // Context for global state
 const AppContext = createContext();
