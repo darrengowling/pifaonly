@@ -5,6 +5,8 @@ import "./App.css";
 import AuctionRoom from "./AuctionRoom";
 import UserGuide from "./components/UserGuide";
 import LandingPage from "./pages/LandingPage";
+import DemoPage from "./pages/DemoPage";
+import BlogPage from "./pages/BlogPage";
 
 // Context for global state
 const AppContext = createContext();
