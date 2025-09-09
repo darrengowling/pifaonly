@@ -165,7 +165,7 @@ const LandingPage = () => {
                 </span>
               </div>
               <p className="text-gray-500 dark:text-gray-400 text-base max-w-md">
-                IPL-style football auctions with exclusive player ownership for small friend groups. 
+                Football auctions with exclusive player ownership for small friend groups. 
                 Build your dream team and compete with friends!
               </p>
             </div>
