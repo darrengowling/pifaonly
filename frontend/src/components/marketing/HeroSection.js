@@ -23,6 +23,7 @@ const HeroSection = () => {
             <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
               for Friends
             </span>
+            <span className="text-yellow-400"> (FAFF)</span>
           </h1>
 
           {/* Subheadline */}
