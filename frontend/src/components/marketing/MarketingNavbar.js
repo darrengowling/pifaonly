@@ -10,12 +10,16 @@ const MarketingNavbar = () => {
     { name: 'Blog', href: '/blog' },
   ]
 
-  const scrollToSection = (href) => {
+  const handleNavigation = (href) => {
     if (href.startsWith('#')) {
+      // Scroll to section on current page
       const element = document.getElementById(href.slice(1))
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' })
       }
+    } else {
+      // Navigate to different page
+      window.location.href = href
     }
     setMobileMenuOpen(false)
   }
