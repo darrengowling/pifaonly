@@ -13,7 +13,7 @@ const DemoPage = () => {
             See Friends of PIFA in Action
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
-            Watch how IPL-style football auctions create unforgettable moments for friend groups
+            Watch how football auctions create unforgettable moments for friend groups
           </p>
         </div>
 
