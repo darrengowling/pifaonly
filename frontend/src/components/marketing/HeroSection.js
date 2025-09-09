@@ -71,19 +71,24 @@ const HeroSection = () => {
                 </div>
               </div>
               
-              {/* Mock Auction Interface Preview */}
-              <div className="mt-8 bg-gray-800/50 rounded-xl p-4 text-left">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm text-gray-400">Live Auction</span>
-                  <span className="bg-green-500 text-xs px-2 py-1 rounded-full text-white">LIVE</span>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center text-white font-bold">
-                    MC
+              {/* Getting Started Preview */}
+              <div className="mt-8 bg-gray-800/50 rounded-xl p-6 text-center">
+                <h3 className="text-lg font-semibold text-white mb-4">Ready to Start?</h3>
+                <p className="text-gray-300 text-sm mb-4">
+                  Create your tournament, invite friends, and start bidding on Champions League teams
+                </p>
+                <div className="flex justify-center space-x-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-blue-400">1.</div>
+                    <div className="text-xs text-gray-400">Create</div>
                   </div>
-                  <div>
-                    <div className="font-semibold text-white">Manchester City</div>
-                    <div className="text-sm text-gray-400">Current bid: £45M by Alex</div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-purple-400">2.</div>
+                    <div className="text-xs text-gray-400">Invite</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-yellow-400">3.</div>
+                    <div className="text-xs text-gray-400">Auction</div>
                   </div>
                 </div>
               </div>
