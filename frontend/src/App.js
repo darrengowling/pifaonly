@@ -94,7 +94,8 @@ function App() {
       <div className="App bg-gray-900 min-h-screen text-white">
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/app" element={<Dashboard />} />
             <Route path="/create" element={<CreateTournament />} />
             <Route path="/tournament/:id" element={<TournamentView />} />
             <Route path="/auction/:id" element={<AuctionRoomWrapper />} />
