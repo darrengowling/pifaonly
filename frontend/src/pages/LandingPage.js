@@ -98,7 +98,7 @@ const LandingPage = () => {
               Everything You Need for Epic Auctions
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Built specifically for friend groups who want the thrill of IPL-style auctions 
+              Built specifically for friend groups who want the thrill of live auctions 
               with the world's best football teams.
             </p>
           </div>
