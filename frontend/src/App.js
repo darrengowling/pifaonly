@@ -929,7 +929,7 @@ const CreateTournament = () => {
           <div className="flex gap-4">
             <button
               type="button"
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/app')}
               className="flex-1 bg-gray-600 hover:bg-gray-700 py-3 rounded-lg font-semibold transition-colors"
             >
               Cancel
