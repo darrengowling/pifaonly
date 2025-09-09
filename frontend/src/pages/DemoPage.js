@@ -10,10 +10,10 @@ const DemoPage = () => {
         {/* Hero Section */}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-6">
-            See Friends of PIFA in Action
+            See FAFF in Action
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
-            Watch how football auctions create unforgettable moments for friend groups
+            Watch how Football Auctions for Friends (FAFF) create unforgettable moments for friend groups
           </p>
         </div>
 
