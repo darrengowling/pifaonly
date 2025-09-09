@@ -51,8 +51,8 @@ const DemoPage = () => {
             </h3>
             <div className="bg-gray-100 dark:bg-gray-700 rounded-xl p-6 mb-4">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Live Auction</span>
-                <span className="bg-green-500 text-xs px-2 py-1 rounded-full text-white font-medium">LIVE</span>
+                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Demo: Auction Interface</span>
+                <span className="bg-blue-500 text-xs px-2 py-1 rounded-full text-white font-medium">PREVIEW</span>
               </div>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
@@ -62,20 +62,20 @@ const DemoPage = () => {
                     </div>
                     <div>
                       <div className="font-medium text-gray-900 dark:text-white">Manchester City</div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">Premier League Champions</div>
+                      <div className="text-sm text-gray-500 dark:text-gray-400">Example team in auction</div>
                     </div>
                   </div>
                   <div className="text-right">
                     <div className="text-lg font-bold text-green-600 dark:text-green-400">£45M</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">Current bid</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">Sample bid</div>
                   </div>
                 </div>
                 <div className="bg-white dark:bg-gray-600 rounded-lg p-3">
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">Bidding by Alex</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">Demo bidding interface</div>
                   <div className="flex space-x-2">
-                    <button className="bg-blue-500 text-white text-xs px-3 py-1 rounded-full">+£5M</button>
-                    <button className="bg-blue-500 text-white text-xs px-3 py-1 rounded-full">+£10M</button>
-                    <button className="bg-blue-500 text-white text-xs px-3 py-1 rounded-full">+£20M</button>
+                    <button className="bg-blue-500 text-white text-xs px-3 py-1 rounded-full opacity-60 cursor-not-allowed">+£5M</button>
+                    <button className="bg-blue-500 text-white text-xs px-3 py-1 rounded-full opacity-60 cursor-not-allowed">+£10M</button>
+                    <button className="bg-blue-500 text-white text-xs px-3 py-1 rounded-full opacity-60 cursor-not-allowed">+£20M</button>
                   </div>
                 </div>
               </div>
