@@ -98,7 +98,7 @@ const BlogPage = () => {
             Ready to Create Your Own Auction?
           </h3>
           <p className="text-gray-600 dark:text-gray-300 mb-6">
-            Experience the excitement of IPL-style football auctions with your friends
+            Experience the excitement of football auctions with your friends
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
