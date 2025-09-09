@@ -97,6 +97,8 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<LandingPage />} />
+            <Route path="/demo" element={<DemoPage />} />
+            <Route path="/blog" element={<BlogPage />} />
             <Route path="/app" element={<Dashboard />} />
             <Route path="/create" element={<CreateTournament />} />
             <Route path="/tournament/:id" element={<TournamentView />} />
