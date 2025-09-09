@@ -402,6 +402,7 @@ test_plan:
   comprehensive_testing_complete: true
   phase_1_3_enhancements_tested: true
   fresh_database_cleanup_complete: true
+  comprehensive_e2e_smoke_test_complete: true
 
 agent_communication:
     - agent: "main"
