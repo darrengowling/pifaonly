@@ -17,7 +17,7 @@ const LandingPage = () => {
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               From league creation to championship glory - here's how Friends of PIFA brings 
-              IPL-style excitement to football with your friends.
+              auction excitement to football with your friends.
             </p>
           </div>
 
