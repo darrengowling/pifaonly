@@ -230,13 +230,35 @@ const Dashboard = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* App Header */}
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center space-x-4">
+          <a href="/" className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+              <span className="text-white font-bold text-lg">P</span>
+            </div>
+            <span className="text-2xl font-bold text-white">Friends of PIFA</span>
+          </a>
+          <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">App</span>
+        </div>
+        <div className="flex items-center space-x-4">
+          <span className="text-gray-300">Welcome, {user.username}</span>
+          <button
+            onClick={showGuide}
+            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-semibold transition-colors text-white"
+          >
+            📖 Guide
+          </button>
+        </div>
+      </div>
+
       {/* Enhanced Welcome Banner */}
       <div className="bg-gradient-to-r from-blue-900 to-purple-900 border border-blue-600 p-6 rounded-lg mb-8">
         <div className="flex items-center justify-between">
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-white mb-2">🎮 Welcome to Friends of PIFA!</h2>
+            <h2 className="text-xl font-bold text-white mb-2">🎮 Ready to play?</h2>
             <p className="text-blue-200 text-sm">
-              Ready to build your squad? Create tournaments, bid on teams, and compete with friends in live auctions.
+              Create tournaments, bid on teams, and compete with friends in live auctions.
             </p>
           </div>
           <div className="flex gap-3">
@@ -245,12 +267,6 @@ const Dashboard = () => {
               className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg font-semibold transition-colors whitespace-nowrap"
             >
               🎯 Join by Code
-            </button>
-            <button
-              onClick={showGuide}
-              className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-semibold transition-colors whitespace-nowrap"
-            >
-              📖 User Guide
             </button>
           </div>
         </div>
