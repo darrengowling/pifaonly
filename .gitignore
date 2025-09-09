@@ -84,3 +84,7 @@ marketing-website/node_modules/@next/swc-linux-arm64-gnu/next-swc.linux-arm64-gn
 # Environment files
 *.env
 *.env.*
+-e 
+# Environment files
+*.env
+*.env.*
