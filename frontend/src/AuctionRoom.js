@@ -628,26 +628,28 @@ const AuctionRoom = ({ tournamentId, user }) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="flex gap-6">
           {/* Main Auction Area */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Current Team with Enhanced UX */}
-            <div className="bg-gray-800 p-6 rounded-lg">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">Current Team</h2>
-                <div className="flex items-center gap-2">
-                  <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                    tournament.status === 'auction_active' ? 'bg-green-600 text-white' : 
-                    tournament.status === 'pending' ? 'bg-yellow-600 text-white' : 
-                    'bg-gray-600 text-white'
-                  }`}>
-                    {tournament.status === 'auction_active' ? '🎪 Live Auction' :
-                     tournament.status === 'pending' ? '🕒 Waiting to Start' :
-                     tournament.status === 'tournament_active' ? '⚽ Tournament Active' : 
-                     tournament.status}
-                  </span>
-                </div>
-              </div>
+          <div className="flex-1 space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 space-y-6">
+                {/* Current Team with Enhanced UX */}
+                <div className="bg-gray-800 p-6 rounded-lg">
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-semibold">Current Team</h2>
+                    <div className="flex items-center gap-2">
+                      <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                        tournament.status === 'auction_active' ? 'bg-green-600 text-white' : 
+                        tournament.status === 'pending' ? 'bg-yellow-600 text-white' : 
+                        'bg-gray-600 text-white'
+                      }`}>
+                        {tournament.status === 'auction_active' ? '🎪 Live Auction' :
+                         tournament.status === 'pending' ? '🕒 Waiting to Start' :
+                         tournament.status === 'tournament_active' ? '⚽ Tournament Active' : 
+                         tournament.status}
+                      </span>
+                    </div>
+                  </div>
               
               <div className={`bg-gray-700 p-6 rounded-lg text-center transition-all duration-300 cursor-pointer hover:bg-gray-650 ${
                 selectedTeam?.id === currentTeam?.id ? 'ring-2 ring-blue-500 bg-gray-600' : ''
