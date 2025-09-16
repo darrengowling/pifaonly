@@ -427,6 +427,14 @@ const AuctionRoom = ({ tournamentId, user }) => {
           const endTime = new Date(tournament.bid_end_time);
           const now = new Date();
           const remaining = Math.max(0, Math.floor((endTime - now) / 1000));
+          
+          console.log('Timer calculation:', {
+            bid_end_time: tournament.bid_end_time,
+            endTime: endTime.toISOString(),
+            now: now.toISOString(),
+            remaining: remaining
+          });
+          
           setTimeRemaining(remaining);
           
           // Start countdown timer
