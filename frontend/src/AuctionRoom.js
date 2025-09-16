@@ -444,28 +444,6 @@ const AuctionRoom = ({ tournamentId, user }) => {
           setCurrentBid(null);
           setTeamBidHistory([]);
         }
-        
-        // Calculate time remaining
-        if (tournament.bid_end_time) {
-          const endTime = new Date(tournament.bid_end_time);
-          const now = new Date();
-          const remaining = Math.max(0, Math.floor((endTime - now) / 1000));
-          setTimeRemaining(remaining);
-          
-          // Start countdown timer
-          if (timerRef.current) {
-            clearInterval(timerRef.current);
-          }
-          timerRef.current = setInterval(() => {
-            setTimeRemaining(prev => {
-              if (prev <= 1) {
-                clearInterval(timerRef.current);
-                return 0;
-              }
-              return prev - 1;
-            });
-          }, 1000);
-        }
       } else {
         console.log('No current team ID or teams not loaded yet');
         setCurrentTeam(null);
