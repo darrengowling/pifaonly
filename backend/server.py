@@ -592,6 +592,44 @@ async def advance_to_next_team(tournament_id: str):
     except (ValueError, IndexError):
         raise HTTPException(status_code=400, detail="Error advancing to next team")
 
+@api_router.post("/tournaments/{tournament_id}/fix-team-ids")
+async def fix_tournament_team_ids(tournament_id: str):
+    """Fix tournament team IDs to use actual teams from database"""
+    tournament_obj = await db.tournaments.find_one({"id": tournament_id})
+    if not tournament_obj:
+        raise HTTPException(status_code=404, detail="Tournament not found")
+    
+    # Get actual teams from database
+    teams = await db.teams.find({"competition": tournament_obj.get("competition_type", "champions_league")}).to_list(1000)
+    valid_team_ids = [team["id"] for team in teams]
+    
+    if not valid_team_ids:
+        raise HTTPException(status_code=400, detail="No teams found in database")
+    
+    # Update tournament with correct team IDs
+    import random
+    random.shuffle(valid_team_ids)
+    
+    # Reset tournament state with valid team IDs
+    update_data = {
+        "teams": valid_team_ids,
+        "current_team_id": valid_team_ids[0] if valid_team_ids else None,
+        "status": "auction_active",
+        "bid_end_time": datetime.utcnow() + timedelta(minutes=2)
+    }
+    
+    await db.tournaments.update_one(
+        {"id": tournament_id},
+        {"$set": update_data}
+    )
+    
+    return {
+        "message": "Tournament team IDs fixed",
+        "teams_count": len(valid_team_ids),
+        "current_team_id": valid_team_ids[0] if valid_team_ids else None,
+        "new_bid_end_time": update_data["bid_end_time"].isoformat()
+    }
+
 # Squad routes
 @api_router.get("/tournaments/{tournament_id}/squads", response_model=List[Squad])
 async def get_tournament_squads(tournament_id: str):
