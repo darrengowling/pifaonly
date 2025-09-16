@@ -315,6 +315,8 @@ const AuctionRoom = ({ tournamentId, user }) => {
           setTimeRemaining(prev => {
             if (prev <= 1) {
               clearInterval(timerRef.current);
+              // Auto-advance to next team when timer expires
+              advanceToNextTeam();
               return 0;
             }
             return prev - 1;
