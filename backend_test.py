@@ -2419,6 +2419,8 @@ def main():
             return tester.run_fresh_cleanup_only()
         elif sys.argv[1] == "--user-registration":
             return tester.run_user_registration_test_only()
+        elif sys.argv[1] == "--auction":
+            return tester.run_critical_auction_test_only()
     
     return tester.run_all_tests()
 
