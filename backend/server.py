@@ -507,8 +507,8 @@ async def reset_auction_timer(tournament_id: str):
     if not tournament:
         raise HTTPException(status_code=404, detail="Tournament not found")
     
-    # Reset the timer to 5 minutes from now
-    new_end_time = datetime.utcnow() + timedelta(minutes=5)
+    # Reset the timer to 2 minutes from now
+    new_end_time = datetime.utcnow() + timedelta(minutes=2)
     await db.tournaments.update_one(
         {"id": tournament_id},
         {"$set": {"bid_end_time": new_end_time}}
