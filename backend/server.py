@@ -516,6 +516,82 @@ async def reset_auction_timer(tournament_id: str):
     
     return {"message": "Auction timer reset", "new_bid_end_time": new_end_time.isoformat()}
 
+@api_router.post("/tournaments/{tournament_id}/advance-team")
+async def advance_to_next_team(tournament_id: str):
+    """Advance auction to next team - handles timer expiry and unbid teams"""
+    tournament_obj = await db.tournaments.find_one({"id": tournament_id})
+    if not tournament_obj:
+        raise HTTPException(status_code=404, detail="Tournament not found")
+    
+    if tournament_obj.get("status") != "auction_active":
+        raise HTTPException(status_code=400, detail="Auction not active")
+    
+    current_team_id = tournament_obj.get("current_team_id")
+    teams_list = tournament_obj.get("teams", [])
+    
+    if not current_team_id or not teams_list:
+        raise HTTPException(status_code=400, detail="No teams to auction")
+    
+    # Check if current team received any bids
+    current_bids = await db.bids.find({"tournament_id": tournament_id, "team_id": current_team_id}).to_list(1000)
+    
+    # If no bids, move team to end of queue for re-auction later
+    if not current_bids:
+        # Remove current team from current position and add to end
+        if current_team_id in teams_list:
+            teams_list.remove(current_team_id)
+            teams_list.append(current_team_id)
+            print(f"Team {current_team_id} had no bids - moved to end of queue")
+    
+    # Find next team
+    try:
+        current_index = teams_list.index(current_team_id) if current_team_id in teams_list else -1
+        next_index = (current_index + 1) % len(teams_list)
+        next_team_id = teams_list[next_index]
+        
+        # If we've cycled back to a team that was already auctioned with bids, auction is complete
+        if next_index == 0 and current_bids:
+            # Check if all teams have been bid on at least once
+            all_teams_bid = True
+            for team_id in teams_list:
+                team_bids = await db.bids.find({"tournament_id": tournament_id, "team_id": team_id}).to_list(1)
+                if not team_bids:
+                    all_teams_bid = False
+                    break
+            
+            if all_teams_bid:
+                # End auction
+                await db.tournaments.update_one(
+                    {"id": tournament_id},
+                    {"$set": {
+                        "status": "completed",
+                        "current_team_id": None,
+                        "bid_end_time": None
+                    }}
+                )
+                return {"message": "Auction completed", "status": "completed"}
+        
+        # Move to next team
+        new_end_time = datetime.utcnow() + timedelta(minutes=2)
+        await db.tournaments.update_one(
+            {"id": tournament_id},
+            {"$set": {
+                "current_team_id": next_team_id,
+                "bid_end_time": new_end_time,
+                "teams": teams_list  # Update teams list in case we moved unbid team to end
+            }}
+        )
+        
+        return {
+            "message": "Advanced to next team",
+            "current_team_id": next_team_id,
+            "new_bid_end_time": new_end_time.isoformat(),
+            "had_bids": len(current_bids) > 0
+        }
+        
+    except (ValueError, IndexError):
+        raise HTTPException(status_code=400, detail="Error advancing to next team")
+
 # Squad routes
 @api_router.get("/tournaments/{tournament_id}/squads", response_model=List[Squad])
 async def get_tournament_squads(tournament_id: str):
