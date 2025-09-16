@@ -49,9 +49,9 @@ const TeamLogo = ({ team, size = 'lg' }) => {
   );
 };
 
-// Team Detail Panel Component
+// Team Detail Panel Component - Now a side panel instead of modal overlay
 const TeamDetailPanel = ({ team, isVisible, onClose, currentBid }) => {
-  if (!isVisible || !team) return null;
+  if (!team) return null;
 
   // Format currency function
   const formatCurrency = (amount) => {
@@ -73,110 +73,96 @@ const TeamDetailPanel = ({ team, isVisible, onClose, currentBid }) => {
   const stats = getTeamStats(team);
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-800 rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+    <div className={`transition-all duration-300 ease-in-out ${isVisible ? 'w-80 opacity-100' : 'w-0 opacity-0 overflow-hidden'}`}>
+      <div className="bg-gray-800 rounded-lg h-full border border-gray-700">
         {/* Header */}
-        <div className="p-6 border-b border-gray-700">
+        <div className="p-4 border-b border-gray-700">
           <div className="flex justify-between items-start">
-            <div className="flex items-center gap-4">
-              <TeamLogo team={team} size="lg" />
-              <div>
-                <h3 className="text-xl font-bold">{team.name}</h3>
-                <p className="text-gray-400">{team.country}</p>
-                <p className="text-sm text-blue-400">{team.competition || 'Champions League'}</p>
+            <div className="flex items-center gap-3">
+              <TeamLogo team={team} size="md" />
+              <div className="min-w-0">
+                <h3 className="text-lg font-bold truncate">{team.name}</h3>
+                <p className="text-gray-400 text-sm">{team.country}</p>
+                <p className="text-xs text-blue-400">{team.competition || 'Champions League'}</p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-white text-2xl"
+              className="text-gray-400 hover:text-white ml-2 flex-shrink-0"
             >
-              ×
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
             </button>
           </div>
         </div>
 
-        {/* Current Auction Status */}
+        {/* Current Bid Info */}
         {currentBid && (
-          <div className="p-4 bg-green-600 bg-opacity-20 border-b border-gray-700">
-            <div className="text-center">
-              <div className="text-lg font-bold text-green-400">Current Highest Bid</div>
-              <div className="text-2xl font-bold">{formatCurrency(currentBid.amount)}</div>
-              <div className="text-sm text-gray-400">by {currentBid.username}</div>
+          <div className="p-4 bg-blue-900/30 border-b border-gray-700">
+            <div className="text-sm text-blue-300 mb-1">Current Bid</div>
+            <div className="text-xl font-bold text-green-400">
+              {formatCurrency(currentBid.amount)}
             </div>
+            <div className="text-xs text-gray-400">by {currentBid.username}</div>
           </div>
         )}
 
-        {/* Team Statistics */}
-        <div className="p-6 space-y-4">
+        {/* Stats */}
+        <div className="p-4 space-y-4 overflow-y-auto">
           <div>
-            <h4 className="text-lg font-semibold mb-3">Club Information</h4>
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <div className="bg-gray-700 p-3 rounded">
-                <div className="text-gray-400">Founded</div>
-                <div className="font-semibold">{stats.founded}</div>
+            <h4 className="text-sm font-semibold text-gray-300 mb-2">Team Stats</h4>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div>
+                <span className="text-gray-400">Founded:</span>
+                <span className="ml-1 text-white">{stats.founded}</span>
               </div>
-              <div className="bg-gray-700 p-3 rounded">
-                <div className="text-gray-400">Market Value</div>
-                <div className="font-semibold text-green-400">{stats.market_value}</div>
+              <div>
+                <span className="text-gray-400">Position:</span>
+                <span className="ml-1 text-white">#{stats.league_position}</span>
               </div>
-              <div className="bg-gray-700 p-3 rounded">
-                <div className="text-gray-400">League Position</div>
-                <div className="font-semibold">#{stats.league_position}</div>
+              <div>
+                <span className="text-gray-400">Goals:</span>
+                <span className="ml-1 text-white">{stats.goals_scored}</span>
               </div>
-              <div className="bg-gray-700 p-3 rounded">
-                <div className="text-gray-400">Coach</div>
-                <div className="font-semibold">{stats.coach}</div>
+              <div>
+                <span className="text-gray-400">Conceded:</span>
+                <span className="ml-1 text-white">{stats.goals_conceded}</span>
               </div>
             </div>
           </div>
 
           <div>
-            <h4 className="text-lg font-semibold mb-3">Performance</h4>
-            <div className="space-y-3">
-              <div className="bg-gray-700 p-3 rounded">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-gray-400">Recent Form</span>
-                  <div className="flex gap-1">
-                    {stats.recent_form.map((result, index) => (
-                      <span
-                        key={index}
-                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                          result === 'W' ? 'bg-green-600' :
-                          result === 'L' ? 'bg-red-600' : 'bg-yellow-600'
-                        }`}
-                      >
-                        {result}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-3">
-                <div className="bg-gray-700 p-3 rounded text-center">
-                  <div className="text-2xl font-bold text-green-400">{stats.goals_scored}</div>
-                  <div className="text-xs text-gray-400">Goals Scored</div>
-                </div>
-                <div className="bg-gray-700 p-3 rounded text-center">
-                  <div className="text-2xl font-bold text-red-400">{stats.goals_conceded}</div>
-                  <div className="text-xs text-gray-400">Goals Conceded</div>
-                </div>
-              </div>
-
-              <div className="bg-gray-700 p-3 rounded">
-                <div className="text-gray-400 mb-1">Top Scorer</div>
-                <div className="font-semibold">{stats.top_scorer} ({Math.floor(stats.goals_scored * 0.3)} goals)</div>
-              </div>
+            <h4 className="text-sm font-semibold text-gray-300 mb-2">Recent Form</h4>
+            <div className="flex gap-1">
+              {stats.recent_form.map((result, index) => (
+                <span
+                  key={index}
+                  className={`w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center ${
+                    result === 'W' ? 'bg-green-600' :
+                    result === 'D' ? 'bg-yellow-600' : 'bg-red-600'
+                  }`}
+                >
+                  {result}
+                </span>
+              ))}
             </div>
           </div>
 
           <div>
-            <h4 className="text-lg font-semibold mb-3">Auction Strategy</h4>
-            <div className="bg-blue-600 bg-opacity-20 p-3 rounded">
-              <div className="text-sm text-blue-200">
-                💡 <strong>Tip:</strong> This team has {stats.recent_form.filter(r => r === 'W').length} wins in their last 5 matches.
-                {stats.league_position <= 5 && " They're currently in a European qualification spot!"}
-                {stats.goals_scored > 25 && " Strong attacking record this season."}
+            <h4 className="text-sm font-semibold text-gray-300 mb-2">Key Info</h4>
+            <div className="space-y-1 text-xs">
+              <div>
+                <span className="text-gray-400">Top Scorer:</span>
+                <span className="ml-1 text-white">{stats.top_scorer}</span>
+              </div>
+              <div>
+                <span className="text-gray-400">Market Value:</span>
+                <span className="ml-1 text-white">{stats.market_value}</span>
+              </div>
+              <div>
+                <span className="text-gray-400">Coach:</span>
+                <span className="ml-1 text-white">{stats.coach}</span>
               </div>
             </div>
           </div>
