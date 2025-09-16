@@ -307,6 +307,7 @@ const AuctionRoom = ({ tournamentId, user }) => {
       ]);
       
       console.log('Tournament data:', tournamentRes.data);
+      console.log('bid_end_time from tournament:', tournamentRes.data.bid_end_time);
       console.log('Teams loaded:', teamsRes.data.length);
       
       // Set tournament and teams state first
