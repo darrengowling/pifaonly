@@ -796,7 +796,7 @@ const AuctionRoom = ({ tournamentId, user }) => {
             </div>
           </div>
 
-          {/* Sidebar */}
+          {/* Sidebar - includes both participant list and team detail panel */}
           <div className="space-y-6">
             {/* Chat */}
             <div className="bg-gray-800 p-4 rounded-lg">
@@ -906,16 +906,16 @@ const AuctionRoom = ({ tournamentId, user }) => {
                 </div>
               )}
             </div>
+
+            {/* Team Detail Panel - Now integrated as sidebar */}
+            <TeamDetailPanel
+              team={detailTeam}
+              isVisible={showTeamDetail}
+              onClose={() => setShowTeamDetail(false)}
+              currentBid={currentBid}
+            />
           </div>
         </div>
-
-        {/* Team Detail Panel */}
-        <TeamDetailPanel
-          team={detailTeam}
-          isVisible={showTeamDetail}
-          onClose={() => setShowTeamDetail(false)}
-          currentBid={currentBid}
-        />
       </div>
     </div>
   );
