@@ -314,6 +314,28 @@ const AuctionRoom = ({ tournamentId, user }) => {
       setTournament(tournamentRes.data);
       setTeams(teamsRes.data);
       
+      // Calculate time remaining (moved here to work regardless of currentTeam)
+      if (tournamentRes.data.bid_end_time) {
+        const endTime = new Date(tournamentRes.data.bid_end_time);
+        const now = new Date();
+        const remaining = Math.max(0, Math.floor((endTime - now) / 1000));
+        setTimeRemaining(remaining);
+        
+        // Start countdown timer
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+        }
+        timerRef.current = setInterval(() => {
+          setTimeRemaining(prev => {
+            if (prev <= 1) {
+              clearInterval(timerRef.current);
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+      }
+      
       // Fetch chat messages
       try {
         const chatRes = await axios.get(`${API}/tournaments/${tournamentId}/chat`);
