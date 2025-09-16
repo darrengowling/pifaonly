@@ -641,12 +641,20 @@ const AuctionRoom = ({ tournamentId, user }) => {
                 {formatTime(timeRemaining)}
               </div>
               {timeRemaining === 0 && (
-                <button
-                  onClick={resetTimer}
-                  className="mt-2 bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-xs"
-                >
-                  Reset Timer (Testing)
-                </button>
+                <div className="flex gap-2 mt-2">
+                  <button
+                    onClick={resetTimer}
+                    className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-xs"
+                  >
+                    Reset Timer (Testing)
+                  </button>
+                  <button
+                    onClick={advanceToNextTeam}
+                    className="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-xs"
+                  >
+                    Advance to Next Team
+                  </button>
+                </div>
               )}
             </div>
           </div>
