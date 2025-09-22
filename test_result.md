@@ -436,7 +436,7 @@ test_plan:
   fresh_database_cleanup_complete: true
   comprehensive_e2e_smoke_test_complete: true
   auction_process_retesting_complete: true
-  frontend_auction_testing_in_progress: true
+  frontend_auction_testing_complete: true
 
 agent_communication:
     - agent: "main"
