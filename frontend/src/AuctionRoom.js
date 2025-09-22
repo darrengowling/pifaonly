@@ -694,11 +694,25 @@ const AuctionRoom = ({ tournamentId, user }) => {
                 
                 <h3 className="text-3xl font-bold mb-2">{currentTeam.name}</h3>
                 <p className="text-gray-400 mb-2">{currentTeam.country}</p>
-                <p className="text-sm text-gray-500 mb-2">
-                  {currentTeam.competition || 'Champions League'} • Europe
-                </p>
+                
+                {/* Dynamic info based on competition type */}
+                {tournament.competition_type === 'ryder_cup' ? (
+                  <>
+                    <p className="text-sm text-gray-500 mb-1">
+                      Team {currentTeam.team} • World Ranking #{currentTeam.world_ranking}
+                    </p>
+                    <p className="text-xs text-purple-400 mb-4">
+                      {currentTeam.major_wins} Major{currentTeam.major_wins !== 1 ? 's' : ''} • {currentTeam.ryder_cup_appearances} Ryder Cup{currentTeam.ryder_cup_appearances !== 1 ? 's' : ''}
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-sm text-gray-500 mb-2">
+                    {currentTeam.competition || 'Champions League'} • Europe
+                  </p>
+                )}
+                
                 <p className="text-xs text-blue-400 mb-4 opacity-75">
-                  Click for team details
+                  Click for {tournament.competition_type === 'ryder_cup' ? 'player' : 'team'} details
                 </p>
                 
                 {/* Current Bid Display */}
