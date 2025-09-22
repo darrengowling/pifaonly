@@ -892,15 +892,23 @@ const CreateTournament = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Teams per User</label>
+            <label className="block text-sm font-medium mb-2">
+              {formData.competition_type === 'ryder_cup' ? 'Players per User' : 'Teams per User'}
+            </label>
             <input
               type="number"
               min="2"
-              max="10"
+              max={formData.competition_type === 'ryder_cup' ? "6" : "10"}
               value={formData.teams_per_user}
               onChange={(e) => setFormData({...formData, teams_per_user: parseInt(e.target.value)})}
               className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500"
             />
+            <p className="text-xs text-gray-400 mt-1">
+              {formData.competition_type === 'ryder_cup' 
+                ? 'Number of golf players each participant will draft (2-6 recommended)'
+                : 'Number of football teams each participant will draft (2-10)'
+              }
+            </p>
           </div>
 
           <div>
