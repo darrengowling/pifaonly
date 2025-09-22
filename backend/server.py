@@ -77,6 +77,7 @@ class TournamentStatus(str, Enum):
 class CompetitionType(str, Enum):
     CHAMPIONS_LEAGUE = "champions_league"
     EUROPA_LEAGUE = "europa_league"
+    RYDER_CUP = "ryder_cup"
 
 # Models
 class User(BaseModel):
