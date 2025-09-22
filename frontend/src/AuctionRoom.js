@@ -480,6 +480,8 @@ const AuctionRoom = ({ tournamentId, user }) => {
     }
   };
 
+  const [autoAdvancing, setAutoAdvancing] = useState(false);
+
   // Function to advance to next team
   const advanceToNextTeam = async () => {
     try {
