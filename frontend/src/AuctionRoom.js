@@ -307,21 +307,35 @@ const AuctionRoom = ({ tournamentId, user }) => {
         const remaining = Math.max(0, Math.floor((endTime - now) / 1000));
         setTimeRemaining(remaining);
         
-        // Start countdown timer
-        if (timerRef.current) {
-          clearInterval(timerRef.current);
+        console.log('Timer initialization:', {
+          bid_end_time: tournamentRes.data.bid_end_time,
+          remaining: remaining,
+          expired: remaining <= 0
+        });
+        
+        // Only start countdown timer if there's time remaining
+        if (remaining > 0) {
+          // Start countdown timer
+          if (timerRef.current) {
+            clearInterval(timerRef.current);
+          }
+          timerRef.current = setInterval(() => {
+            setTimeRemaining(prev => {
+              if (prev <= 1) {
+                clearInterval(timerRef.current);
+                // Auto-advance to next team when timer expires (only if not already auto-advancing)
+                if (!autoAdvancing) {
+                  advanceToNextTeam();
+                }
+                return 0;
+              }
+              return prev - 1;
+            });
+          }, 1000);
+        } else {
+          // Timer already expired - show manual controls but don't auto-advance on page load
+          console.log('Timer already expired on page load - showing manual controls');
         }
-        timerRef.current = setInterval(() => {
-          setTimeRemaining(prev => {
-            if (prev <= 1) {
-              clearInterval(timerRef.current);
-              // Auto-advance to next team when timer expires
-              advanceToNextTeam();
-              return 0;
-            }
-            return prev - 1;
-          });
-        }, 1000);
       }
       
       // Fetch chat messages
