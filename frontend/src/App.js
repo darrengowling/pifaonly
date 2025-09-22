@@ -435,7 +435,7 @@ const Dashboard = () => {
             </div>
           </div>
           <p className="text-gray-400 mb-6">
-            Start a new football auction with your friends. Choose from <strong>32 Champions League</strong> and <strong>32 Europa League</strong> teams.
+            Start a new auction with your friends. Choose from <strong>Football</strong> (Champions League, Europa League) or <strong>Golf</strong> (Ryder Cup players).
           </p>
           <div className="space-y-3">
             <div className="flex justify-between text-sm">
