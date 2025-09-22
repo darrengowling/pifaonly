@@ -27,7 +27,7 @@ Welcome to the Friends of PIFA app! This guide will help you navigate and test a
 ## 🚀 Getting Started
 
 ### Step 1: Access the App
-1. Open your browser and go to: **https://fantasy-auction-2.preview.emergentagent.com**
+1. Open your browser and go to: **https://faff-auction.preview.emergentagent.com**
 2. The app will automatically create a user account for you (you'll see "Welcome back, User_XXX!")
 3. You'll land on the **Dashboard** showing available tournaments
 

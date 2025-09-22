@@ -2,7 +2,7 @@
 
 ## 🎯 For Your PIFA Friends Testing the App
 
-**App URL:** https://fantasy-auction-2.preview.emergentagent.com
+**App URL:** https://faff-auction.preview.emergentagent.com
 
 ### 📋 Quick Test Scenario (15 minutes)
 
