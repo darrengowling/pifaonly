@@ -885,8 +885,9 @@ const CreateTournament = () => {
               onChange={(e) => setFormData({...formData, competition_type: e.target.value})}
               className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500"
             >
-              <option value="champions_league">Champions League</option>
-              <option value="europa_league">Europa League</option>
+              <option value="champions_league">⚽ Champions League (Football)</option>
+              <option value="europa_league">⚽ Europa League (Football)</option>
+              <option value="ryder_cup">🏌️ Ryder Cup (Golf)</option>
             </select>
           </div>
 
