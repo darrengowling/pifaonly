@@ -289,6 +289,41 @@ async def get_teams(competition: Optional[CompetitionType] = None):
     teams = await db.teams.find(query).to_list(1000)
     return [Team(**team) for team in teams]
 
+@api_router.post("/initialize-ryder-cup")
+async def initialize_ryder_cup_players():
+    """Initialize Ryder Cup players in the database"""
+    
+    # Check if players already exist
+    existing_players = await db.teams.find({"competition": "ryder_cup"}).to_list(1000)
+    if existing_players:
+        return {
+            "message": "Ryder Cup players already initialized", 
+            "existing_count": len(existing_players)
+        }
+    
+    # Insert all Ryder Cup players
+    players_to_insert = []
+    for player_data in RYDER_CUP_PLAYERS:
+        player = Team(
+            id=str(uuid.uuid4()),
+            name=player_data["name"],
+            country=player_data["country"],
+            competition=player_data["competition"],
+            # Store golf-specific data in a flexible way
+            world_ranking=player_data.get("world_ranking"),
+            team=player_data.get("team"),  # Europe or USA
+            major_wins=player_data.get("major_wins", 0),
+            ryder_cup_appearances=player_data.get("ryder_cup_appearances", 0)
+        )
+        players_to_insert.append(player.dict())
+    
+    await db.teams.insert_many(players_to_insert)
+    
+    return {
+        "message": "Ryder Cup players initialized successfully",
+        "players_added": len(players_to_insert)
+    }
+
 # Tournament routes
 @api_router.post("/tournaments", response_model=Tournament)
 async def create_tournament(tournament: TournamentCreate, admin_id: str):
