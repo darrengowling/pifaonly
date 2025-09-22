@@ -174,6 +174,7 @@ const TeamDetailPanel = ({ team, isVisible, onClose, currentBid }) => {
 };
 
 const AuctionRoom = ({ tournamentId, user }) => {
+  const navigate = useNavigate();
   const [tournament, setTournament] = useState(null);
   const [currentTeam, setCurrentTeam] = useState(null);
   const [currentBid, setCurrentBid] = useState(null);
