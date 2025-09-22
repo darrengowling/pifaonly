@@ -96,6 +96,11 @@ class Team(BaseModel):
     country: str
     competition: CompetitionType
     logo_url: Optional[str] = None
+    # Golf-specific fields for Ryder Cup players
+    world_ranking: Optional[int] = None
+    team: Optional[str] = None  # "Europe" or "USA" for Ryder Cup
+    major_wins: Optional[int] = None
+    ryder_cup_appearances: Optional[int] = None
 
 class Tournament(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
