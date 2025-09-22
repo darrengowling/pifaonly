@@ -2804,6 +2804,8 @@ def main():
             return tester.run_user_registration_test_only()
         elif sys.argv[1] == "--auction":
             return tester.run_critical_auction_test_only()
+        elif sys.argv[1] == "--auction-retest":
+            return tester.run_comprehensive_auction_retesting_only()
     
     return tester.run_all_tests()
 
