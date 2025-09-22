@@ -14,6 +14,7 @@ import asyncio
 import json
 import random
 import string
+from ryder_cup_players import RYDER_CUP_PLAYERS
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
