@@ -666,7 +666,9 @@ const AuctionRoom = ({ tournamentId, user }) => {
             {/* Current Team with Enhanced UX */}
             <div className="bg-gray-800 p-6 rounded-lg">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">Current Team</h2>
+                <h2 className="text-xl font-semibold">
+                  {tournament.competition_type === 'ryder_cup' ? 'Current Player' : 'Current Team'}
+                </h2>
                 <div className="flex items-center gap-2">
                   <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
                     tournament.status === 'auction_active' ? 'bg-green-600 text-white' : 
@@ -675,6 +677,7 @@ const AuctionRoom = ({ tournamentId, user }) => {
                   }`}>
                     {tournament.status === 'auction_active' ? '🎪 Live Auction' :
                      tournament.status === 'pending' ? '🕒 Waiting to Start' :
+                     tournament.competition_type === 'ryder_cup' ? '🏌️ Tournament Active' :
                      tournament.status === 'tournament_active' ? '⚽ Tournament Active' : 
                      tournament.status}
                   </span>
