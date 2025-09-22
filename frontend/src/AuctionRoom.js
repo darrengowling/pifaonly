@@ -484,13 +484,21 @@ const AuctionRoom = ({ tournamentId, user }) => {
 
   // Function to advance to next team
   const advanceToNextTeam = async () => {
+    if (autoAdvancing) {
+      console.log('Auto-advance already in progress, skipping...');
+      return;
+    }
+    
+    setAutoAdvancing(true);
+    console.log('Auto-advancing to next team...');
+    
     try {
       const response = await axios.post(`${API}/tournaments/${tournamentId}/advance-team`);
       console.log('Advanced to next team:', response.data);
       
       if (response.data.status === 'completed') {
         // Auction is completed
-        alert('🎉 Auction completed! All teams have been assigned.');
+        alert('🎉 Auction completed! All players have been assigned.');
         // Refresh the page to show final results
         window.location.reload();
       } else {
@@ -501,6 +509,11 @@ const AuctionRoom = ({ tournamentId, user }) => {
       console.error('Error advancing to next team:', error);
       // Still refresh to get latest state
       fetchInitialData();
+    } finally {
+      // Reset the flag after a delay to prevent rapid consecutive calls
+      setTimeout(() => {
+        setAutoAdvancing(false);
+      }, 3000);
     }
   };
 
